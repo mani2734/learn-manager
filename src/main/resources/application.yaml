@@ -1,3 +1,8 @@
 spring:
   application:
     name: learn-manager
+  jpa:
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
