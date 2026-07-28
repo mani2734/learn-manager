@@ -1,10 +1,21 @@
 spring:
   application:
     name: learn-manager
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/learnmanager}
+    username: ${DB_USERNAME:learnmanager}
+    password: ${DB_PASSWORD:learnmanager}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
+      ddl-auto: update
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    open-in-view: false
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
   security:
     jwt:
       secret: L/Awp5zXpdu3lpL7nVjz6fA8RQVW10M+4X0b5R+JFDM=
