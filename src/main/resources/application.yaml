@@ -5,4 +5,9 @@ spring:
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  security:
+    jwt:
+      secret: L/Awp5zXpdu3lpL7nVjz6fA8RQVW10M+4X0b5R+JFDM=
+      issuer: learnmanager
+      expiration: 60m
 
