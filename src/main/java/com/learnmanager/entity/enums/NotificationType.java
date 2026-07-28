@@ -1,4 +1,4 @@
-package com.learnmanager.enums;
+package com.learnmanager.entity.enums;
 
 public enum NotificationType {
   PLANNED_SESSION_REMINDER,

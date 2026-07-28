@@ -16,9 +16,9 @@ spring:
     properties:
       hibernate:
         format_sql: true
-  security:
-    jwt:
-      secret: L/Awp5zXpdu3lpL7nVjz6fA8RQVW10M+4X0b5R+JFDM=
-      issuer: learnmanager
-      expiration: 60m
+security:
+  jwt:
+    secret: L/Awp5zXpdu3lpL7nVjz6fA8RQVW10M+4X0b5R+JFDM=
+    issuer: learnmanager
+    expiration: 60m
 

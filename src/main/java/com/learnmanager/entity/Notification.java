@@ -1,6 +1,6 @@
 package com.learnmanager.entity;
 
-import com.learnmanager.enums.NotificationType;
+import com.learnmanager.entity.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class Notification extends BaseEntity {
 
   @Column(nullable = false, length = 2000) private String message;
 
-  @Column(nullable = false) private boolean read = false;
+  @Column(nullable = false) private boolean notificationRead = false;
 
   public Notification(User user, NotificationType type, String title, String message) {
     this.user = user;

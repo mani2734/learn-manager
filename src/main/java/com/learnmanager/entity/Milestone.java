@@ -1,6 +1,6 @@
 package com.learnmanager.entity;
 
-import com.learnmanager.enums.GoalStatus;
+import com.learnmanager.entity.enums.GoalStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;

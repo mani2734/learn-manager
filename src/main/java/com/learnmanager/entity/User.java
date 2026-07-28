@@ -1,6 +1,6 @@
 package com.learnmanager.entity;
 
-import com.learnmanager.enums.Role;
+import com.learnmanager.entity.enums.Role;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
