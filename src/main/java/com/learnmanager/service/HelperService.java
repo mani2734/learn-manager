@@ -3,13 +3,16 @@ package com.learnmanager.service;
 import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.StudyModule;
 import com.learnmanager.entity.StudyTime;
+import com.learnmanager.entity.User;
 import com.learnmanager.entity.enums.GoalStatus;
 import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.LearningGoalRepository;
 import com.learnmanager.repository.StudyModuleRepository;
 import com.learnmanager.repository.StudyTimeRepository;
+import com.learnmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +33,8 @@ public class HelperService {
   private final LearningGoalRepository learningGoalRepository;
 
   private final StudyTimeRepository studyTimeRepository;
+
+  private final UserRepository userRepository;
 
   public String normalizeOptionalText(String value) {
     if (value == null || value.isBlank()) {
@@ -102,6 +107,12 @@ public class HelperService {
                                       .min(MAXIMUM_PROGRESS);
 
     return progress.setScale(2, RoundingMode.HALF_UP);
+  }
+
+  @Transactional(readOnly = true)
+  public User findUserByEmail(String userEmail) {
+    return userRepository.findByEmailIgnoreCase(normalizeEmail(userEmail))
+                         .orElseThrow(() -> new UsernameNotFoundException("Authenticated user no longer exists"));
   }
 
 }
