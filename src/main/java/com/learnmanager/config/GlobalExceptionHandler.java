@@ -1,6 +1,8 @@
 package com.learnmanager.config;
 
+import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.exception.EmailAlreadyExistsException;
+import com.learnmanager.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.core.AuthenticationException;
@@ -21,6 +23,26 @@ public class GlobalExceptionHandler {
     ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
 
     problemDetail.setTitle("Email already exists");
+
+    return problemDetail;
+  }
+
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ProblemDetail handleResourceNotFound(
+      ResourceNotFoundException exception) {
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, exception.getMessage());
+
+    problemDetail.setTitle("Resource not found");
+
+    return problemDetail;
+  }
+
+  @ExceptionHandler(BusinessRuleException.class)
+  public ProblemDetail handleBusinessRuleException(
+      BusinessRuleException exception) {
+    ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, exception.getMessage());
+
+    problemDetail.setTitle("Business rule violation");
 
     return problemDetail;
   }

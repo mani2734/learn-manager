@@ -2,9 +2,13 @@ package com.learnmanager.service;
 
 import com.learnmanager.dto.CreateStudyModuleRequest;
 import com.learnmanager.dto.StudyModuleResponse;
+import com.learnmanager.dto.UpdateStudyModuleRequest;
+import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.StudyModule;
 import com.learnmanager.entity.User;
+import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.exception.ResourceNotFoundException;
+import com.learnmanager.repository.LearningGoalRepository;
 import com.learnmanager.repository.StudyModuleRepository;
 import com.learnmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +27,8 @@ public class StudyModuleService {
 
   private final StudyModuleRepository studyModuleRepository;
 
+  private final LearningGoalRepository learningGoalRepository;
+
   private final UserRepository userRepository;
 
   @Transactional
@@ -30,7 +36,7 @@ public class StudyModuleService {
     User user = userRepository.findByEmailIgnoreCase(userEmail.trim())
                               .orElseThrow(() -> new UsernameNotFoundException("Authenticated user no longer exists"));
 
-    BigDecimal workloadHours = calculateWorkloadHours(request);
+    BigDecimal workloadHours = calculateWorkloadHours(request.ects(), request.workloadHours());
 
     StudyModule studyModule = new StudyModule(
         user,
@@ -60,17 +66,47 @@ public class StudyModuleService {
     return StudyModuleResponse.fromEntity(studyModule);
   }
 
+  @Transactional
+  public StudyModuleResponse update(String userEmail, Long moduleId, UpdateStudyModuleRequest request) {
+    StudyModule studyModule = findOwnedModule(userEmail, moduleId);
+
+    BigDecimal workloadHours = calculateWorkloadHours(request.ects(), request.workloadHours());
+
+    validateWorkloadAgainstLearningGoals(studyModule.getId(), workloadHours);
+
+    studyModule.setName(request.name().trim());
+    studyModule.setCode(normalizeOptionalText(request.code()));
+    studyModule.setDescription(normalizeOptionalText(request.description()));
+    studyModule.setEcts(request.ects());
+    studyModule.setWorkloadHours(workloadHours);
+
+    StudyModule updatedStudyModule = studyModuleRepository.save(studyModule);
+
+    return StudyModuleResponse.fromEntity(updatedStudyModule);
+  }
+
   private StudyModule findOwnedModule(String userEmail, Long moduleId) {
     return studyModuleRepository.findByIdAndUserEmailIgnoreCase(moduleId, userEmail.trim())
                                 .orElseThrow(() -> new ResourceNotFoundException("Study module not found"));
   }
 
-  private BigDecimal calculateWorkloadHours(CreateStudyModuleRequest request) {
-    if (request.workloadHours() != null) {
-      return request.workloadHours();
+  private BigDecimal calculateWorkloadHours(Integer ects, BigDecimal workloadHours) {
+    if (workloadHours != null) {
+      return workloadHours;
     }
 
-    return BigDecimal.valueOf(request.ects()).multiply(HOURS_PER_ECTS);
+    return BigDecimal.valueOf(ects).multiply(HOURS_PER_ECTS);
+  }
+
+  private void validateWorkloadAgainstLearningGoals(Long studyModuleId, BigDecimal newWorkloadHours) {
+    BigDecimal assignedWorkload = learningGoalRepository.findAllByStudyModule_Id(studyModuleId)
+                                                        .stream()
+                                                        .map(LearningGoal::getWorkloadHours)
+                                                        .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    if (newWorkloadHours.compareTo(assignedWorkload) < 0) {
+      throw new BusinessRuleException("Module workload must not be lower than the total learning goal workload");
+    }
   }
 
   private String normalizeOptionalText(String value) {

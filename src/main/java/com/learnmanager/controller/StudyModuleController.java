@@ -2,6 +2,7 @@ package com.learnmanager.controller;
 
 import com.learnmanager.dto.CreateStudyModuleRequest;
 import com.learnmanager.dto.StudyModuleResponse;
+import com.learnmanager.dto.UpdateStudyModuleRequest;
 import com.learnmanager.service.StudyModuleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,13 @@ public class StudyModuleController {
   @GetMapping("get/{id}")
   public StudyModuleResponse getById(Authentication authentication, @PathVariable Long id) {
     return studyModuleService.getById(authentication.getName(), id);
+  }
+
+  @PutMapping("update/{id}")
+  public StudyModuleResponse update(
+      Authentication authentication,
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateStudyModuleRequest request) {
+    return studyModuleService.update(authentication.getName(), id, request);
   }
 }
