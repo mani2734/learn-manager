@@ -4,10 +4,13 @@ import com.learnmanager.dto.CreateMilestoneRequest;
 import com.learnmanager.dto.MilestoneResponse;
 import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.Milestone;
+import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.MilestoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,4 +30,35 @@ public class MilestoneService {
 
     return MilestoneResponse.fromEntity(savedMilestone);
   }
+
+  @Transactional(readOnly = true)
+  public List<MilestoneResponse> getAll(String userEmail) {
+    return milestoneRepository.findAllByLearningGoal_StudyModule_User_EmailIgnoreCaseOrderByCreatedAtDesc(helperService.normalizeEmail(
+        userEmail)).stream().map(MilestoneResponse::fromEntity).toList();
+  }
+
+  @Transactional(readOnly = true)
+  public List<MilestoneResponse> getAllByLearningGoal(String userEmail, Long learningGoalId) {
+    LearningGoal learningGoal = helperService.findOwnedLearningGoal(userEmail, learningGoalId);
+
+    return milestoneRepository.findAllByLearningGoal_IdOrderByCreatedAtDesc(learningGoal.getId())
+                              .stream()
+                              .map(MilestoneResponse::fromEntity)
+                              .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public MilestoneResponse getById(String userEmail, Long milestoneId) {
+    Milestone milestone = findOwnedMilestone(userEmail, milestoneId);
+
+    return MilestoneResponse.fromEntity(milestone);
+  }
+
+  private Milestone findOwnedMilestone(String userEmail, Long milestoneId) {
+    return milestoneRepository.findByIdAndLearningGoal_StudyModule_User_EmailIgnoreCase(
+                                  milestoneId,
+                                  helperService.normalizeEmail(userEmail))
+                              .orElseThrow(() -> new ResourceNotFoundException("Milestone not found"));
+  }
+
 }
