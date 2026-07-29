@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,5 +36,38 @@ public class LearningGoalService {
     LearningGoal savedLearningGoal = learningGoalRepository.save(learningGoal);
 
     return LearningGoalResponse.fromEntity(savedLearningGoal, BigDecimal.ZERO);
+  }
+
+  @Transactional(readOnly = true)
+  public List<LearningGoalResponse> getAll(
+      String userEmail) {
+    return learningGoalRepository.findAllByStudyModule_User_EmailIgnoreCaseOrderByCreatedAtDesc(helperService.normalizeEmail(userEmail))
+                                 .stream()
+                                 .map(this::createResponse)
+                                 .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public List<LearningGoalResponse> getAllByModule(String userEmail, Long studyModuleId) {
+    StudyModule studyModule = helperService.findOwnedStudyModule(userEmail, studyModuleId);
+
+    return learningGoalRepository.findAllByStudyModule_IdOrderByCreatedAtDesc(studyModule.getId())
+                                 .stream()
+                                 .map(this::createResponse)
+                                 .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public LearningGoalResponse getById(String userEmail, Long learningGoalId) {
+    LearningGoal learningGoal = helperService.findOwnedLearningGoal(userEmail, learningGoalId);
+
+    return createResponse(learningGoal);
+  }
+
+  private LearningGoalResponse createResponse(
+      LearningGoal learningGoal) {
+    BigDecimal progress = helperService.calculateLearningGoalProgress(learningGoal);
+
+    return LearningGoalResponse.fromEntity(learningGoal, progress);
   }
 }

@@ -2,24 +2,34 @@ package com.learnmanager.service;
 
 import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.StudyModule;
+import com.learnmanager.entity.StudyTime;
+import com.learnmanager.entity.enums.GoalStatus;
 import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.LearningGoalRepository;
 import com.learnmanager.repository.StudyModuleRepository;
+import com.learnmanager.repository.StudyTimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
 public class HelperService {
 
+  private static final BigDecimal MINUTES_PER_HOUR = BigDecimal.valueOf(60);
+
+  private static final BigDecimal MAXIMUM_PROGRESS = BigDecimal.valueOf(100);
+
   private final StudyModuleRepository studyModuleRepository;
 
   private final LearningGoalRepository learningGoalRepository;
+
+  private final StudyTimeRepository studyTimeRepository;
 
   public String normalizeOptionalText(String value) {
     if (value == null || value.isBlank()) {
@@ -62,4 +72,36 @@ public class HelperService {
       throw new BusinessRuleException("Module workload must not be lower than the total learning goal workload");
     }
   }
+
+  @Transactional(readOnly = true)
+  public LearningGoal findOwnedLearningGoal(String userEmail, Long learningGoalId) {
+    return learningGoalRepository.findByIdAndStudyModule_User_EmailIgnoreCase(learningGoalId, normalizeEmail(userEmail))
+                                 .orElseThrow(() -> new ResourceNotFoundException("Learning goal not found"));
+  }
+
+  @Transactional(readOnly = true)
+  public BigDecimal calculateLearningGoalProgress(
+      LearningGoal learningGoal) {
+    if (learningGoal.getStatus() == GoalStatus.COMPLETED) {
+      return MAXIMUM_PROGRESS.setScale(2);
+    }
+
+    long totalMinutes = studyTimeRepository.findAllByLearningGoal_Id(learningGoal.getId())
+                                           .stream()
+                                           .mapToLong(StudyTime::getDurationMinutes)
+                                           .sum();
+
+    if (totalMinutes <= 0) {
+      return BigDecimal.ZERO.setScale(2);
+    }
+
+    BigDecimal trackedHours = BigDecimal.valueOf(totalMinutes).divide(MINUTES_PER_HOUR, 4, RoundingMode.HALF_UP);
+
+    BigDecimal progress = trackedHours.divide(learningGoal.getWorkloadHours(), 4, RoundingMode.HALF_UP)
+                                      .multiply(MAXIMUM_PROGRESS)
+                                      .min(MAXIMUM_PROGRESS);
+
+    return progress.setScale(2, RoundingMode.HALF_UP);
+  }
+
 }
