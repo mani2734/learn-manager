@@ -4,6 +4,7 @@ import com.learnmanager.dto.CreateStudyModuleRequest;
 import com.learnmanager.dto.StudyModuleResponse;
 import com.learnmanager.entity.StudyModule;
 import com.learnmanager.entity.User;
+import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.StudyModuleRepository;
 import com.learnmanager.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class StudyModuleService {
   public StudyModuleResponse create(String userEmail, CreateStudyModuleRequest request) {
     User user = userRepository.findByEmailIgnoreCase(userEmail.trim())
                               .orElseThrow(() -> new UsernameNotFoundException("Authenticated user no longer exists"));
+
     BigDecimal workloadHours = calculateWorkloadHours(request);
 
     StudyModule studyModule = new StudyModule(
@@ -38,7 +41,28 @@ public class StudyModuleService {
         workloadHours);
 
     StudyModule savedStudyModule = studyModuleRepository.save(studyModule);
+
     return StudyModuleResponse.fromEntity(savedStudyModule);
+  }
+
+  @Transactional(readOnly = true)
+  public List<StudyModuleResponse> getAll(String userEmail) {
+    return studyModuleRepository.findAllByUserEmailIgnoreCaseOrderByCreatedAtDesc(userEmail.trim())
+                                .stream()
+                                .map(StudyModuleResponse::fromEntity)
+                                .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public StudyModuleResponse getById(String userEmail, Long moduleId) {
+    StudyModule studyModule = findOwnedModule(userEmail, moduleId);
+
+    return StudyModuleResponse.fromEntity(studyModule);
+  }
+
+  private StudyModule findOwnedModule(String userEmail, Long moduleId) {
+    return studyModuleRepository.findByIdAndUserEmailIgnoreCase(moduleId, userEmail.trim())
+                                .orElseThrow(() -> new ResourceNotFoundException("Study module not found"));
   }
 
   private BigDecimal calculateWorkloadHours(CreateStudyModuleRequest request) {
