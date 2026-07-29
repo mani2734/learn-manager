@@ -7,4 +7,6 @@ public interface ModulePlanRepository extends JpaRepository<ModulePlan, Long> {
 
   void deleteAllByStudyModule_Id(
       Long studyModuleId);
+
+  void deleteAllByPlanningPeriod_Id(Long planningPeriodId);
 }

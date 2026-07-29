@@ -17,4 +17,10 @@ public interface PlanningPeriodRepository extends JpaRepository<PlanningPeriod, 
   List<PlanningPeriod> findAllByUser_EmailIgnoreCaseOrderByStartDateDesc(String email);
 
   Optional<PlanningPeriod> findByIdAndUser_EmailIgnoreCase(Long id, String email);
+
+  boolean existsByUser_EmailIgnoreCaseAndIdNotAndStartDateLessThanEqualAndEndDateGreaterThanEqual(
+      String email,
+      Long excludedPlanningPeriodId,
+      LocalDate newEndDate,
+      LocalDate newStartDate);
 }
