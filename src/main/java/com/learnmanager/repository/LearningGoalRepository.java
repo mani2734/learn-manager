@@ -9,4 +9,7 @@ public interface LearningGoalRepository extends JpaRepository<LearningGoal, Long
 
   List<LearningGoal> findAllByStudyModule_Id(
       Long studyModuleId);
+
+  void deleteAllByStudyModule_Id(
+      Long studyModuleId);
 }

@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PlannedStudySessionRepository extends JpaRepository<PlannedStudySession, Long> {
 
+  void deleteAllByStudyModule_Id(
+      Long studyModuleId);
 }

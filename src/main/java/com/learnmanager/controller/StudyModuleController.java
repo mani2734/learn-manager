@@ -43,4 +43,10 @@ public class StudyModuleController {
       @Valid @RequestBody UpdateStudyModuleRequest request) {
     return studyModuleService.update(authentication.getName(), id, request);
   }
+
+  @DeleteMapping("delete/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(Authentication authentication, @PathVariable Long id) {
+    studyModuleService.delete(authentication.getName(), id);
+  }
 }

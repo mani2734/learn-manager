@@ -8,9 +8,7 @@ import com.learnmanager.entity.StudyModule;
 import com.learnmanager.entity.User;
 import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.exception.ResourceNotFoundException;
-import com.learnmanager.repository.LearningGoalRepository;
-import com.learnmanager.repository.StudyModuleRepository;
-import com.learnmanager.repository.UserRepository;
+import com.learnmanager.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -30,6 +28,16 @@ public class StudyModuleService {
   private final LearningGoalRepository learningGoalRepository;
 
   private final UserRepository userRepository;
+
+  private final TimerRepository timerRepository;
+
+  private final StudyTimeRepository studyTimeRepository;
+
+  private final MilestoneRepository milestoneRepository;
+
+  private final ModulePlanRepository modulePlanRepository;
+
+  private final PlannedStudySessionRepository plannedStudySessionRepository;
 
   @Transactional
   public StudyModuleResponse create(String userEmail, CreateStudyModuleRequest request) {
@@ -83,6 +91,20 @@ public class StudyModuleService {
     StudyModule updatedStudyModule = studyModuleRepository.save(studyModule);
 
     return StudyModuleResponse.fromEntity(updatedStudyModule);
+  }
+
+  @Transactional
+  public void delete(String userEmail, Long moduleId) {
+    StudyModule studyModule = findOwnedModule(userEmail, moduleId);
+
+    //don't change the order to avoid foreign key constraint violations
+    timerRepository.deleteAllByStudyModule_Id(moduleId);
+    studyTimeRepository.deleteAllByStudyModule_Id(moduleId);
+    milestoneRepository.deleteAllByLearningGoal_StudyModule_Id(moduleId);
+    learningGoalRepository.deleteAllByStudyModule_Id(moduleId);
+    modulePlanRepository.deleteAllByStudyModule_Id(moduleId);
+    plannedStudySessionRepository.deleteAllByStudyModule_Id(moduleId);
+    studyModuleRepository.delete(studyModule);
   }
 
   private StudyModule findOwnedModule(String userEmail, Long moduleId) {
