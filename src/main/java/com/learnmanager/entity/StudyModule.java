@@ -19,22 +19,16 @@ public class StudyModule extends BaseEntity {
 
   @Column(length = 50) private String code;
 
-  @Column(length = 2000) private String description;
-
-  @Column(nullable = false) private Integer ects;
-
   @Column(nullable = false, precision = 8, scale = 2) private BigDecimal workloadHours;
 
   @ManyToOne(fetch = FetchType.LAZY, optional = false)
   @JoinColumn(nullable = false)
   private User user;
 
-  public StudyModule(User user, String name, String code, String description, Integer ects, BigDecimal workloadHours) {
+  public StudyModule(User user, String name, String code, BigDecimal workloadHours) {
     this.user = user;
     this.name = name;
     this.code = code;
-    this.description = description;
-    this.ects = ects;
     this.workloadHours = workloadHours;
   }
 }

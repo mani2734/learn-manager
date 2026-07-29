@@ -11,14 +11,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class StudyModuleService {
-
-  private static final BigDecimal HOURS_PER_ECTS = BigDecimal.valueOf(30);
 
   private final StudyModuleRepository studyModuleRepository;
 
@@ -43,15 +40,10 @@ public class StudyModuleService {
     User user = userRepository.findByEmailIgnoreCase(userEmail.trim())
                               .orElseThrow(() -> new UsernameNotFoundException("Authenticated user no longer exists"));
 
-    BigDecimal workloadHours = calculateWorkloadHours(request.ects(), request.workloadHours());
-
     StudyModule studyModule = new StudyModule(
         user,
         request.name().trim(),
-        helperService.normalizeOptionalText(request.code()),
-        helperService.normalizeOptionalText(request.description()),
-        request.ects(),
-        workloadHours);
+        helperService.normalizeOptionalText(request.code()), request.workloadHours());
 
     StudyModule savedStudyModule = studyModuleRepository.save(studyModule);
 
@@ -77,15 +69,11 @@ public class StudyModuleService {
   public StudyModuleResponse update(String userEmail, Long moduleId, UpdateStudyModuleRequest request) {
     StudyModule studyModule = helperService.findOwnedStudyModule(userEmail, moduleId);
 
-    BigDecimal workloadHours = calculateWorkloadHours(request.ects(), request.workloadHours());
-
-    helperService.validateWorkloadAgainstLearningGoals(studyModule, workloadHours, false);
+    helperService.validateWorkloadAgainstLearningGoals(studyModule, request.workloadHours(), false);
 
     studyModule.setName(request.name().trim());
     studyModule.setCode(helperService.normalizeOptionalText(request.code()));
-    studyModule.setDescription(helperService.normalizeOptionalText(request.description()));
-    studyModule.setEcts(request.ects());
-    studyModule.setWorkloadHours(workloadHours);
+    studyModule.setWorkloadHours(request.workloadHours());
 
     StudyModule updatedStudyModule = studyModuleRepository.save(studyModule);
 
@@ -104,13 +92,5 @@ public class StudyModuleService {
     modulePlanRepository.deleteAllByStudyModule_Id(moduleId);
     plannedStudySessionRepository.deleteAllByStudyModule_Id(moduleId);
     studyModuleRepository.delete(studyModule);
-  }
-
-  private BigDecimal calculateWorkloadHours(Integer ects, BigDecimal workloadHours) {
-    if (workloadHours != null) {
-      return workloadHours;
-    }
-
-    return BigDecimal.valueOf(ects).multiply(HOURS_PER_ECTS);
   }
 }

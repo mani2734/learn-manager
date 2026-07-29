@@ -5,7 +5,7 @@ import com.learnmanager.entity.StudyModule;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-public record StudyModuleResponse(Long id, String name, String code, String description, Integer ects, BigDecimal workloadHours,
+public record StudyModuleResponse(Long id, String name, String code, BigDecimal workloadHours,
                                   LocalDateTime createdAt, LocalDateTime updatedAt) {
 
   public static StudyModuleResponse fromEntity(
@@ -14,8 +14,6 @@ public record StudyModuleResponse(Long id, String name, String code, String desc
         studyModule.getId(),
         studyModule.getName(),
         studyModule.getCode(),
-        studyModule.getDescription(),
-        studyModule.getEcts(),
         studyModule.getWorkloadHours(),
         studyModule.getCreatedAt(),
         studyModule.getUpdatedAt());
