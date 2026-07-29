@@ -9,4 +9,6 @@ public interface ModulePlanRepository extends JpaRepository<ModulePlan, Long> {
       Long studyModuleId);
 
   void deleteAllByPlanningPeriod_Id(Long planningPeriodId);
+
+  boolean existsByPlanningPeriod_IdAndStudyModule_IdAndPeriodNumber(Long planningPeriodId, Long studyModuleId, Integer periodNumber);
 }
