@@ -3,11 +3,8 @@ package com.learnmanager.service;
 import com.learnmanager.dto.CreateStudyModuleRequest;
 import com.learnmanager.dto.StudyModuleResponse;
 import com.learnmanager.dto.UpdateStudyModuleRequest;
-import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.StudyModule;
 import com.learnmanager.entity.User;
-import com.learnmanager.exception.BusinessRuleException;
-import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,6 +36,8 @@ public class StudyModuleService {
 
   private final PlannedStudySessionRepository plannedStudySessionRepository;
 
+  private final HelperService helperService;
+
   @Transactional
   public StudyModuleResponse create(String userEmail, CreateStudyModuleRequest request) {
     User user = userRepository.findByEmailIgnoreCase(userEmail.trim())
@@ -49,8 +48,8 @@ public class StudyModuleService {
     StudyModule studyModule = new StudyModule(
         user,
         request.name().trim(),
-        normalizeOptionalText(request.code()),
-        normalizeOptionalText(request.description()),
+        helperService.normalizeOptionalText(request.code()),
+        helperService.normalizeOptionalText(request.description()),
         request.ects(),
         workloadHours);
 
@@ -69,22 +68,22 @@ public class StudyModuleService {
 
   @Transactional(readOnly = true)
   public StudyModuleResponse getById(String userEmail, Long moduleId) {
-    StudyModule studyModule = findOwnedModule(userEmail, moduleId);
+    StudyModule studyModule = helperService.findOwnedStudyModule(userEmail, moduleId);
 
     return StudyModuleResponse.fromEntity(studyModule);
   }
 
   @Transactional
   public StudyModuleResponse update(String userEmail, Long moduleId, UpdateStudyModuleRequest request) {
-    StudyModule studyModule = findOwnedModule(userEmail, moduleId);
+    StudyModule studyModule = helperService.findOwnedStudyModule(userEmail, moduleId);
 
     BigDecimal workloadHours = calculateWorkloadHours(request.ects(), request.workloadHours());
 
-    validateWorkloadAgainstLearningGoals(studyModule.getId(), workloadHours);
+    helperService.validateWorkloadAgainstLearningGoals(studyModule, workloadHours, false);
 
     studyModule.setName(request.name().trim());
-    studyModule.setCode(normalizeOptionalText(request.code()));
-    studyModule.setDescription(normalizeOptionalText(request.description()));
+    studyModule.setCode(helperService.normalizeOptionalText(request.code()));
+    studyModule.setDescription(helperService.normalizeOptionalText(request.description()));
     studyModule.setEcts(request.ects());
     studyModule.setWorkloadHours(workloadHours);
 
@@ -95,7 +94,7 @@ public class StudyModuleService {
 
   @Transactional
   public void delete(String userEmail, Long moduleId) {
-    StudyModule studyModule = findOwnedModule(userEmail, moduleId);
+    StudyModule studyModule = helperService.findOwnedStudyModule(userEmail, moduleId);
 
     //don't change the order to avoid foreign key constraint violations
     timerRepository.deleteAllByStudyModule_Id(moduleId);
@@ -107,35 +106,11 @@ public class StudyModuleService {
     studyModuleRepository.delete(studyModule);
   }
 
-  private StudyModule findOwnedModule(String userEmail, Long moduleId) {
-    return studyModuleRepository.findByIdAndUserEmailIgnoreCase(moduleId, userEmail.trim())
-                                .orElseThrow(() -> new ResourceNotFoundException("Study module not found"));
-  }
-
   private BigDecimal calculateWorkloadHours(Integer ects, BigDecimal workloadHours) {
     if (workloadHours != null) {
       return workloadHours;
     }
 
     return BigDecimal.valueOf(ects).multiply(HOURS_PER_ECTS);
-  }
-
-  private void validateWorkloadAgainstLearningGoals(Long studyModuleId, BigDecimal newWorkloadHours) {
-    BigDecimal assignedWorkload = learningGoalRepository.findAllByStudyModule_Id(studyModuleId)
-                                                        .stream()
-                                                        .map(LearningGoal::getWorkloadHours)
-                                                        .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-    if (newWorkloadHours.compareTo(assignedWorkload) < 0) {
-      throw new BusinessRuleException("Module workload must not be lower than the total learning goal workload");
-    }
-  }
-
-  private String normalizeOptionalText(String value) {
-    if (value == null || value.isBlank()) {
-      return null;
-    }
-
-    return value.trim();
   }
 }
