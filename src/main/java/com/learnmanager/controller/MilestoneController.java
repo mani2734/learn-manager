@@ -2,6 +2,7 @@ package com.learnmanager.controller;
 
 import com.learnmanager.dto.CreateMilestoneRequest;
 import com.learnmanager.dto.MilestoneResponse;
+import com.learnmanager.dto.UpdateMilestoneRequest;
 import com.learnmanager.service.MilestoneService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,19 @@ public class MilestoneController {
   @GetMapping("get/{id}")
   public MilestoneResponse getById(Authentication authentication, @PathVariable Long id) {
     return milestoneService.getById(authentication.getName(), id);
+  }
+
+  @PutMapping("update/{id}")
+  public MilestoneResponse update(
+      Authentication authentication,
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateMilestoneRequest request) {
+    return milestoneService.update(authentication.getName(), id, request);
+  }
+
+  @DeleteMapping("delete/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(Authentication authentication, @PathVariable Long id) {
+    milestoneService.delete(authentication.getName(), id);
   }
 }

@@ -2,6 +2,7 @@ package com.learnmanager.service;
 
 import com.learnmanager.dto.CreateMilestoneRequest;
 import com.learnmanager.dto.MilestoneResponse;
+import com.learnmanager.dto.UpdateMilestoneRequest;
 import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.Milestone;
 import com.learnmanager.exception.ResourceNotFoundException;
@@ -52,6 +53,26 @@ public class MilestoneService {
     Milestone milestone = findOwnedMilestone(userEmail, milestoneId);
 
     return MilestoneResponse.fromEntity(milestone);
+  }
+
+  @Transactional
+  public MilestoneResponse update(String userEmail, Long milestoneId, UpdateMilestoneRequest request) {
+    Milestone milestone = findOwnedMilestone(userEmail, milestoneId);
+
+    milestone.setTitle(request.title().trim());
+    milestone.setDeadline(request.deadline());
+    milestone.setStatus(request.status());
+
+    Milestone updatedMilestone = milestoneRepository.save(milestone);
+
+    return MilestoneResponse.fromEntity(updatedMilestone);
+  }
+
+  @Transactional
+  public void delete(String userEmail, Long milestoneId) {
+    Milestone milestone = findOwnedMilestone(userEmail, milestoneId);
+
+    milestoneRepository.delete(milestone);
   }
 
   private Milestone findOwnedMilestone(String userEmail, Long milestoneId) {
