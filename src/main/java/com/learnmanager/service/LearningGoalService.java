@@ -2,6 +2,7 @@ package com.learnmanager.service;
 
 import com.learnmanager.dto.CreateLearningGoalRequest;
 import com.learnmanager.dto.LearningGoalResponse;
+import com.learnmanager.dto.UpdateLearningGoalRequest;
 import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.StudyModule;
 import com.learnmanager.repository.LearningGoalRepository;
@@ -27,11 +28,7 @@ public class LearningGoalService {
     helperService.validateWorkloadAgainstLearningGoals(studyModule, request.workloadHours(), true);
 
     LearningGoal learningGoal = new LearningGoal(
-        studyModule,
-        request.title().trim(),
-        helperService.normalizeOptionalText(request.description()),
-        request.workloadHours(),
-        request.deadline());
+        studyModule, request.title().trim(), request.workloadHours(), request.deadline());
 
     LearningGoal savedLearningGoal = learningGoalRepository.save(learningGoal);
 
@@ -62,6 +59,26 @@ public class LearningGoalService {
     LearningGoal learningGoal = helperService.findOwnedLearningGoal(userEmail, learningGoalId);
 
     return createResponse(learningGoal);
+  }
+
+  @Transactional
+  public LearningGoalResponse update(String userEmail, Long learningGoalId, UpdateLearningGoalRequest request) {
+    LearningGoal learningGoal = helperService.findOwnedLearningGoal(userEmail, learningGoalId);
+
+    BigDecimal workloadDifference = request.workloadHours().subtract(learningGoal.getWorkloadHours());
+
+    if (workloadDifference.compareTo(BigDecimal.ZERO) > 0) {
+      helperService.validateWorkloadAgainstLearningGoals(learningGoal.getStudyModule(), workloadDifference, true);
+    }
+
+    learningGoal.setTitle(request.title().trim());
+    learningGoal.setWorkloadHours(request.workloadHours());
+    learningGoal.setDeadline(request.deadline());
+    learningGoal.setStatus(request.status());
+
+    LearningGoal updatedLearningGoal = learningGoalRepository.save(learningGoal);
+
+    return createResponse(updatedLearningGoal);
   }
 
   private LearningGoalResponse createResponse(

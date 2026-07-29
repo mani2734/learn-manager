@@ -2,6 +2,7 @@ package com.learnmanager.controller;
 
 import com.learnmanager.dto.CreateLearningGoalRequest;
 import com.learnmanager.dto.LearningGoalResponse;
+import com.learnmanager.dto.UpdateLearningGoalRequest;
 import com.learnmanager.service.LearningGoalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,13 @@ public class LearningGoalController {
   @GetMapping("get/{id}")
   public LearningGoalResponse getById(Authentication authentication, @PathVariable Long id) {
     return learningGoalService.getById(authentication.getName(), id);
+  }
+
+  @PutMapping("update/{id}")
+  public LearningGoalResponse update(
+      Authentication authentication,
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateLearningGoalRequest request) {
+    return learningGoalService.update(authentication.getName(), id, request);
   }
 }

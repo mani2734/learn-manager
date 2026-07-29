@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record LearningGoalResponse(Long id, Long studyModuleId, String title, String description, BigDecimal workloadHours,
+public record LearningGoalResponse(Long id, Long studyModuleId, String title, BigDecimal workloadHours,
                                    LocalDate deadline, GoalStatus status, BigDecimal progressPercentage, LocalDateTime createdAt,
                                    LocalDateTime updatedAt) {
 
@@ -16,7 +16,6 @@ public record LearningGoalResponse(Long id, Long studyModuleId, String title, St
         learningGoal.getId(),
         learningGoal.getStudyModule().getId(),
         learningGoal.getTitle(),
-        learningGoal.getDescription(),
         learningGoal.getWorkloadHours(),
         learningGoal.getDeadline(),
         learningGoal.getStatus(),

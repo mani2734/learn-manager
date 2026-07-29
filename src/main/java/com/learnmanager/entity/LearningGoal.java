@@ -23,8 +23,6 @@ public class LearningGoal extends BaseEntity {
 
   @Column(nullable = false, length = 150) private String title;
 
-  @Column(length = 2000) private String description;
-
   @Column(nullable = false, precision = 8, scale = 2) private BigDecimal workloadHours;
 
   @Column private LocalDate deadline;
@@ -33,10 +31,9 @@ public class LearningGoal extends BaseEntity {
   @Column(nullable = false, length = 20)
   private GoalStatus status = GoalStatus.PLANNED;
 
-  public LearningGoal(StudyModule studyModule, String title, String description, BigDecimal workloadHours, LocalDate deadline) {
+  public LearningGoal(StudyModule studyModule, String title, BigDecimal workloadHours, LocalDate deadline) {
     this.studyModule = studyModule;
     this.title = title;
-    this.description = description;
     this.workloadHours = workloadHours;
     this.deadline = deadline;
   }
