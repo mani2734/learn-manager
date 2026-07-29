@@ -6,6 +6,9 @@ import com.learnmanager.dto.UpdateLearningGoalRequest;
 import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.StudyModule;
 import com.learnmanager.repository.LearningGoalRepository;
+import com.learnmanager.repository.MilestoneRepository;
+import com.learnmanager.repository.StudyTimeRepository;
+import com.learnmanager.repository.TimerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,12 @@ public class LearningGoalService {
 
   private final LearningGoalRepository learningGoalRepository;
 
+  private final MilestoneRepository milestoneRepository;
+
+  private final StudyTimeRepository studyTimeRepository;
+
+  private final TimerRepository timerRepository;
+
   private final HelperService helperService;
 
   @Transactional
@@ -27,8 +36,7 @@ public class LearningGoalService {
 
     helperService.validateWorkloadAgainstLearningGoals(studyModule, request.workloadHours(), true);
 
-    LearningGoal learningGoal = new LearningGoal(
-        studyModule, request.title().trim(), request.workloadHours(), request.deadline());
+    LearningGoal learningGoal = new LearningGoal(studyModule, request.title().trim(), request.workloadHours(), request.deadline());
 
     LearningGoal savedLearningGoal = learningGoalRepository.save(learningGoal);
 
@@ -79,6 +87,16 @@ public class LearningGoalService {
     LearningGoal updatedLearningGoal = learningGoalRepository.save(learningGoal);
 
     return createResponse(updatedLearningGoal);
+  }
+
+  @Transactional
+  public void delete(String userEmail, Long learningGoalId) {
+    LearningGoal learningGoal = helperService.findOwnedLearningGoal(userEmail, learningGoalId);
+
+    timerRepository.deleteAllByLearningGoal_Id(learningGoalId);
+    studyTimeRepository.deleteAllByLearningGoal_Id(learningGoalId);
+    milestoneRepository.deleteAllByLearningGoal_Id(learningGoalId);
+    learningGoalRepository.delete(learningGoal);
   }
 
   private LearningGoalResponse createResponse(

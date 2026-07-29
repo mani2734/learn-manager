@@ -48,4 +48,10 @@ public class LearningGoalController {
       @Valid @RequestBody UpdateLearningGoalRequest request) {
     return learningGoalService.update(authentication.getName(), id, request);
   }
+
+  @DeleteMapping("delete/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(Authentication authentication, @PathVariable Long id) {
+    learningGoalService.delete(authentication.getName(), id);
+  }
 }
