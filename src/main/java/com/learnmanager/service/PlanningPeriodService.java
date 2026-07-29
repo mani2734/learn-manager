@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,19 @@ public class PlanningPeriodService {
     validateNoOverlap(user.getEmail(), startDate, endDate);
 
     return PlanningPeriodResponse.fromEntity(planningPeriodRepository.save(new PlanningPeriod(user, startDate)));
+  }
+
+  @Transactional(readOnly = true)
+  public List<PlanningPeriodResponse> getAll(String userEmail) {
+    return planningPeriodRepository.findAllByUser_EmailIgnoreCaseOrderByStartDateDesc(helperService.normalizeEmail(userEmail))
+                                   .stream()
+                                   .map(PlanningPeriodResponse::fromEntity)
+                                   .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public PlanningPeriodResponse getById(String userEmail, Long planningPeriodId) {
+    return PlanningPeriodResponse.fromEntity(helperService.findOwnedPlanningPeriod(userEmail, planningPeriodId));
   }
 
   private void validateNoOverlap(String userEmail, LocalDate startDate, LocalDate endDate) {

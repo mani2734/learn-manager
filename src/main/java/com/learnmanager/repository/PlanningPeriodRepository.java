@@ -4,6 +4,8 @@ import com.learnmanager.entity.PlanningPeriod;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 public interface PlanningPeriodRepository extends JpaRepository<PlanningPeriod, Long> {
 
@@ -11,4 +13,8 @@ public interface PlanningPeriodRepository extends JpaRepository<PlanningPeriod, 
       String email,
       LocalDate newEndDate,
       LocalDate newStartDate);
+
+  List<PlanningPeriod> findAllByUser_EmailIgnoreCaseOrderByStartDateDesc(String email);
+
+  Optional<PlanningPeriod> findByIdAndUser_EmailIgnoreCase(Long id, String email);
 }

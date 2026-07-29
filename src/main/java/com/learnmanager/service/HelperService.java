@@ -1,16 +1,10 @@
 package com.learnmanager.service;
 
-import com.learnmanager.entity.LearningGoal;
-import com.learnmanager.entity.StudyModule;
-import com.learnmanager.entity.StudyTime;
-import com.learnmanager.entity.User;
+import com.learnmanager.entity.*;
 import com.learnmanager.entity.enums.GoalStatus;
 import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.exception.ResourceNotFoundException;
-import com.learnmanager.repository.LearningGoalRepository;
-import com.learnmanager.repository.StudyModuleRepository;
-import com.learnmanager.repository.StudyTimeRepository;
-import com.learnmanager.repository.UserRepository;
+import com.learnmanager.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -35,6 +29,8 @@ public class HelperService {
   private final StudyTimeRepository studyTimeRepository;
 
   private final UserRepository userRepository;
+
+  private final PlanningPeriodRepository planningPeriodRepository;
 
   public String normalizeOptionalText(String value) {
     if (value == null || value.isBlank()) {
@@ -113,6 +109,12 @@ public class HelperService {
   public User findUserByEmail(String userEmail) {
     return userRepository.findByEmailIgnoreCase(normalizeEmail(userEmail))
                          .orElseThrow(() -> new UsernameNotFoundException("Authenticated user no longer exists"));
+  }
+
+  @Transactional(readOnly = true)
+  public PlanningPeriod findOwnedPlanningPeriod(String userEmail, Long planningPeriodId) {
+    return planningPeriodRepository.findByIdAndUser_EmailIgnoreCase(planningPeriodId, normalizeEmail(userEmail))
+                                   .orElseThrow(() -> new ResourceNotFoundException("Planning period not found"));
   }
 
 }

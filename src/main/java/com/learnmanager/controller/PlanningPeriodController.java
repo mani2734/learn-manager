@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/planningPeriods/")
 @RequiredArgsConstructor
@@ -20,5 +22,15 @@ public class PlanningPeriodController {
   @ResponseStatus(HttpStatus.CREATED)
   public PlanningPeriodResponse create(Authentication authentication, @Valid @RequestBody CreatePlanningPeriodRequest request) {
     return planningPeriodService.create(authentication.getName(), request);
+  }
+
+  @GetMapping("getAll")
+  public List<PlanningPeriodResponse> getAll(Authentication authentication) {
+    return planningPeriodService.getAll(authentication.getName());
+  }
+
+  @GetMapping("get/{id}")
+  public PlanningPeriodResponse getById(Authentication authentication, @PathVariable Long id) {
+    return planningPeriodService.getById(authentication.getName(), id);
   }
 }
