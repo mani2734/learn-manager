@@ -2,6 +2,7 @@ package com.learnmanager.dto;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
@@ -12,6 +13,6 @@ public record CreateStudyModuleRequest(
 
     @Size(max = 50, message = "Code must not exceed 50 characters") String code,
 
-    @DecimalMin(value = "0.01", message = "Workload hours must be greater than zero") BigDecimal workloadHours) {
+    @NotNull @DecimalMin(value = "0.01", message = "Workload hours must be greater than zero") BigDecimal workloadHours) {
 
 }
