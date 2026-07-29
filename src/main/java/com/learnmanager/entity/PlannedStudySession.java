@@ -24,8 +24,6 @@ public class PlannedStudySession extends BaseEntity {
 
   @Column(nullable = false, length = 150) private String title;
 
-  @Column(length = 2000) private String description;
-
   @Column(nullable = false) private LocalDateTime startTime;
 
   @Column(nullable = false) private LocalDateTime endTime;
@@ -34,13 +32,11 @@ public class PlannedStudySession extends BaseEntity {
       User user,
       StudyModule studyModule,
       String title,
-      String description,
       LocalDateTime startTime,
       LocalDateTime endTime) {
     this.user = user;
     this.studyModule = studyModule;
     this.title = title;
-    this.description = description;
     this.startTime = startTime;
     this.endTime = endTime;
   }

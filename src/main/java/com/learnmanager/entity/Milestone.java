@@ -17,8 +17,6 @@ public class Milestone extends BaseEntity {
 
   @Column(nullable = false, length = 150) private String title;
 
-  @Column(length = 2000) private String description;
-
   private LocalDate deadline;
 
   @Enumerated(EnumType.STRING)
@@ -29,10 +27,9 @@ public class Milestone extends BaseEntity {
   @JoinColumn(nullable = false)
   private LearningGoal learningGoal;
 
-  public Milestone(LearningGoal learningGoal, String title, String description, LocalDate deadline) {
+  public Milestone(LearningGoal learningGoal, String title, LocalDate deadline) {
     this.learningGoal = learningGoal;
     this.title = title;
-    this.description = description;
     this.deadline = deadline;
   }
 }
