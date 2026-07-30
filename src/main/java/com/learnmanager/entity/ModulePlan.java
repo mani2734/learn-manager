@@ -32,4 +32,9 @@ public class ModulePlan extends BaseEntity {
     this.periodNumber = periodNumber;
     this.plannedHours = plannedHours;
   }
+
+  public void update(Integer periodNumber, BigDecimal plannedHours) {
+    this.periodNumber = periodNumber;
+    this.plannedHours = plannedHours;
+  }
 }

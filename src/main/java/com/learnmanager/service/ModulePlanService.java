@@ -2,6 +2,7 @@ package com.learnmanager.service;
 
 import com.learnmanager.dto.CreateModulePlanRequest;
 import com.learnmanager.dto.ModulePlanResponse;
+import com.learnmanager.dto.UpdateModulePlanRequest;
 import com.learnmanager.entity.ModulePlan;
 import com.learnmanager.entity.PlanningPeriod;
 import com.learnmanager.entity.StudyModule;
@@ -60,6 +61,26 @@ public class ModulePlanService {
     return ModulePlanResponse.fromEntity(findOwnedModulePlan(userEmail, modulePlanId));
   }
 
+  @Transactional
+  public ModulePlanResponse update(String userEmail, Long modulePlanId, UpdateModulePlanRequest request) {
+    ModulePlan modulePlan = findOwnedModulePlan(userEmail, modulePlanId);
+
+    validateModulePlanDoesNotExistForUpdate(
+        modulePlan.getPlanningPeriod().getId(),
+        modulePlan.getStudyModule().getId(),
+        request.periodNumber(),
+        modulePlanId);
+
+    modulePlan.update(request.periodNumber(), request.plannedHours());
+
+    return ModulePlanResponse.fromEntity(modulePlanRepository.save(modulePlan));
+  }
+
+  @Transactional
+  public void delete(String userEmail, Long modulePlanId) {
+    modulePlanRepository.delete(findOwnedModulePlan(userEmail, modulePlanId));
+  }
+
   private ModulePlan findOwnedModulePlan(String userEmail, Long modulePlanId) {
     return modulePlanRepository.findByIdAndPlanningPeriod_User_EmailIgnoreCase(modulePlanId, helperService.normalizeEmail(userEmail))
                                .orElseThrow(() -> new ResourceNotFoundException("Module plan not found"));
@@ -75,4 +96,17 @@ public class ModulePlanService {
       throw new BusinessRuleException("A module plan already exists for this module and period number");
     }
   }
+
+  private void validateModulePlanDoesNotExistForUpdate(Long planningPeriodId, Long studyModuleId, Integer periodNumber, Long modulePlanId) {
+    boolean modulePlanExists = modulePlanRepository.existsByPlanningPeriod_IdAndStudyModule_IdAndPeriodNumberAndIdNot(
+        planningPeriodId,
+        studyModuleId,
+        periodNumber,
+        modulePlanId);
+
+    if (modulePlanExists) {
+      throw new BusinessRuleException("A module plan already exists for this module and period number");
+    }
+  }
+
 }

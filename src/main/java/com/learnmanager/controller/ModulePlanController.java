@@ -2,6 +2,7 @@ package com.learnmanager.controller;
 
 import com.learnmanager.dto.CreateModulePlanRequest;
 import com.learnmanager.dto.ModulePlanResponse;
+import com.learnmanager.dto.UpdateModulePlanRequest;
 import com.learnmanager.service.ModulePlanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +38,19 @@ public class ModulePlanController {
   @GetMapping("get/{id}")
   public ModulePlanResponse getById(Authentication authentication, @PathVariable Long id) {
     return modulePlanService.getById(authentication.getName(), id);
+  }
+
+  @PutMapping("update/{id}")
+  public ModulePlanResponse update(
+      Authentication authentication,
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateModulePlanRequest request) {
+    return modulePlanService.update(authentication.getName(), id, request);
+  }
+
+  @DeleteMapping("delete/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(Authentication authentication, @PathVariable Long id) {
+    modulePlanService.delete(authentication.getName(), id);
   }
 }
