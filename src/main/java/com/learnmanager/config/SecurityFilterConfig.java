@@ -16,7 +16,13 @@ public class SecurityFilterConfig {
       throws Exception {
     return http.csrf(csrf -> csrf.disable())
                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-               .authorizeHttpRequests(authorize -> authorize.requestMatchers("/api/auth/register", "/api/auth/login")
+               .authorizeHttpRequests(authorize -> authorize.requestMatchers(
+                                                                "/api/auth/register",
+                                                                "/api/auth/login",
+                                                                "/swagger-ui.html",
+                                                                "/swagger-ui/**",
+                                                                "/v3/api-docs",
+                                                                "/v3/api-docs/**")
                                                             .permitAll()
                                                             .anyRequest()
                                                             .authenticated())
