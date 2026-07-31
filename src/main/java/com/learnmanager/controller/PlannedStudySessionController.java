@@ -1,6 +1,7 @@
 package com.learnmanager.controller;
 
 import com.learnmanager.dto.CreatePlannedStudySessionRequest;
+import com.learnmanager.dto.CreatePlannedStudySessionSeriesRequest;
 import com.learnmanager.dto.PlannedStudySessionResponse;
 import com.learnmanager.dto.UpdatePlannedStudySessionRequest;
 import com.learnmanager.service.PlannedStudySessionService;
@@ -52,6 +53,14 @@ public class PlannedStudySessionController {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(Authentication authentication, @PathVariable Long id) {
     plannedStudySessionService.delete(authentication.getName(), id);
+  }
+
+  @PostMapping("createSeries")
+  @ResponseStatus(HttpStatus.CREATED)
+  public List<PlannedStudySessionResponse> createSeries(
+      Authentication authentication,
+      @Valid @RequestBody CreatePlannedStudySessionSeriesRequest request) {
+    return plannedStudySessionService.createSeries(authentication.getName(), request);
   }
 
 }

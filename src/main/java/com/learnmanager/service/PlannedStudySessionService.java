@@ -1,10 +1,12 @@
 package com.learnmanager.service;
 
 import com.learnmanager.dto.CreatePlannedStudySessionRequest;
+import com.learnmanager.dto.CreatePlannedStudySessionSeriesRequest;
 import com.learnmanager.dto.PlannedStudySessionResponse;
 import com.learnmanager.dto.UpdatePlannedStudySessionRequest;
 import com.learnmanager.entity.PlannedStudySession;
 import com.learnmanager.entity.StudyModule;
+import com.learnmanager.entity.enums.RecurrenceFrequency;
 import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.repository.PlannedStudySessionRepository;
 import com.learnmanager.repository.StudyTimeRepository;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -85,6 +88,28 @@ public class PlannedStudySessionService {
     plannedStudySessionRepository.delete(plannedStudySession);
   }
 
+  @Transactional
+  public List<PlannedStudySessionResponse> createSeries(String userEmail, CreatePlannedStudySessionSeriesRequest request) {
+    StudyModule studyModule = helperService.findOwnedStudyModule(userEmail, request.studyModuleId());
+
+    validateTimeRange(request.startTime(), request.endTime());
+
+    List<PlannedStudySession> plannedStudySessions = new ArrayList<>();
+
+    for (int occurrenceIndex = 0; occurrenceIndex < request.occurrenceCount(); occurrenceIndex++) {
+      long dayOffset = calculateDayOffset(request.recurrenceFrequency(), occurrenceIndex);
+
+      plannedStudySessions.add(new PlannedStudySession(
+          studyModule.getUser(),
+          studyModule,
+          request.title().trim(),
+          request.startTime().plusDays(dayOffset),
+          request.endTime().plusDays(dayOffset)));
+    }
+
+    return plannedStudySessionRepository.saveAll(plannedStudySessions).stream().map(PlannedStudySessionResponse::fromEntity).toList();
+  }
+
   private void validateTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
     if (!endTime.isAfter(startTime)) {
       throw new BusinessRuleException("End time must be after start time");
@@ -100,4 +125,12 @@ public class PlannedStudySessionService {
       throw new BusinessRuleException("Planned study session cannot be deleted because tracked study time is linked to it");
     }
   }
+
+  private long calculateDayOffset(RecurrenceFrequency recurrenceFrequency, int occurrenceIndex) {
+    return switch (recurrenceFrequency) {
+      case DAILY -> occurrenceIndex;
+      case WEEKLY -> occurrenceIndex * 7L;
+    };
+  }
+
 }
