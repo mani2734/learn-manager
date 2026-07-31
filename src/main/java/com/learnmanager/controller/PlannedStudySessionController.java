@@ -48,4 +48,10 @@ public class PlannedStudySessionController {
     return plannedStudySessionService.update(authentication.getName(), id, request);
   }
 
+  @DeleteMapping("delete/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(Authentication authentication, @PathVariable Long id) {
+    plannedStudySessionService.delete(authentication.getName(), id);
+  }
+
 }

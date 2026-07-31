@@ -12,4 +12,6 @@ public interface StudyTimeRepository extends JpaRepository<StudyTime, Long> {
   List<StudyTime> findAllByLearningGoal_Id(Long learningGoalId);
 
   void deleteAllByLearningGoal_Id(Long learningGoalId);
+
+  boolean existsByPlannedStudySession_Id(Long plannedStudySessionId);
 }

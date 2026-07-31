@@ -7,6 +7,8 @@ import com.learnmanager.entity.PlannedStudySession;
 import com.learnmanager.entity.StudyModule;
 import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.repository.PlannedStudySessionRepository;
+import com.learnmanager.repository.StudyTimeRepository;
+import com.learnmanager.repository.TimerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,10 @@ import java.util.List;
 public class PlannedStudySessionService {
 
   private final PlannedStudySessionRepository plannedStudySessionRepository;
+
+  private final StudyTimeRepository studyTimeRepository;
+
+  private final TimerRepository timerRepository;
 
   private final HelperService helperService;
 
@@ -70,9 +76,28 @@ public class PlannedStudySessionService {
     return PlannedStudySessionResponse.fromEntity(plannedStudySessionRepository.save(plannedStudySession));
   }
 
+  @Transactional
+  public void delete(String userEmail, Long plannedStudySessionId) {
+    PlannedStudySession plannedStudySession = helperService.findOwnedPlannedStudySession(userEmail, plannedStudySessionId);
+
+    validateCanBeDeleted(plannedStudySessionId);
+
+    plannedStudySessionRepository.delete(plannedStudySession);
+  }
+
   private void validateTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
     if (!endTime.isAfter(startTime)) {
       throw new BusinessRuleException("End time must be after start time");
+    }
+  }
+
+  private void validateCanBeDeleted(Long plannedStudySessionId) {
+    if (timerRepository.existsByPlannedStudySession_Id(plannedStudySessionId)) {
+      throw new BusinessRuleException("Planned study session cannot be deleted while an active timer is linked to it");
+    }
+
+    if (studyTimeRepository.existsByPlannedStudySession_Id(plannedStudySessionId)) {
+      throw new BusinessRuleException("Planned study session cannot be deleted because tracked study time is linked to it");
     }
   }
 }

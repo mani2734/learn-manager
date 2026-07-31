@@ -8,4 +8,6 @@ public interface TimerRepository extends JpaRepository<Timer, Long> {
   void deleteAllByStudyModule_Id(Long studyModuleId);
 
   void deleteAllByLearningGoal_Id(Long learningGoalId);
+
+  boolean existsByPlannedStudySession_Id(Long plannedStudySessionId);
 }
