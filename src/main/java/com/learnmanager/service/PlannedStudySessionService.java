@@ -10,6 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class PlannedStudySessionService {
@@ -22,7 +25,7 @@ public class PlannedStudySessionService {
   public PlannedStudySessionResponse create(String userEmail, CreatePlannedStudySessionRequest request) {
     StudyModule studyModule = helperService.findOwnedStudyModule(userEmail, request.studyModuleId());
 
-    validateTimeRange(request);
+    validateTimeRange(request.startTime(), request.endTime());
 
     return PlannedStudySessionResponse.fromEntity(plannedStudySessionRepository.save(new PlannedStudySession(
         studyModule.getUser(),
@@ -32,8 +35,31 @@ public class PlannedStudySessionService {
                                                                                                              request.endTime())));
   }
 
-  private void validateTimeRange(CreatePlannedStudySessionRequest request) {
-    if (!request.endTime().isAfter(request.startTime())) {
+  @Transactional(readOnly = true)
+  public List<PlannedStudySessionResponse> getAll(String userEmail) {
+    return plannedStudySessionRepository.findAllByUser_EmailIgnoreCaseOrderByStartTimeAsc(helperService.normalizeEmail(userEmail))
+                                        .stream()
+                                        .map(PlannedStudySessionResponse::fromEntity)
+                                        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public List<PlannedStudySessionResponse> getAllByStudyModule(String userEmail, Long studyModuleId) {
+    StudyModule studyModule = helperService.findOwnedStudyModule(userEmail, studyModuleId);
+
+    return plannedStudySessionRepository.findAllByStudyModule_IdOrderByStartTimeAsc(studyModule.getId())
+                                        .stream()
+                                        .map(PlannedStudySessionResponse::fromEntity)
+                                        .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public PlannedStudySessionResponse getById(String userEmail, Long plannedStudySessionId) {
+    return PlannedStudySessionResponse.fromEntity(helperService.findOwnedPlannedStudySession(userEmail, plannedStudySessionId));
+  }
+
+  private void validateTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
+    if (!endTime.isAfter(startTime)) {
       throw new BusinessRuleException("End time must be after start time");
     }
   }

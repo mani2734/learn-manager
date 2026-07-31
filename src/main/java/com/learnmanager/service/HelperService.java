@@ -32,6 +32,8 @@ public class HelperService {
 
   private final PlanningPeriodRepository planningPeriodRepository;
 
+  private final PlannedStudySessionRepository plannedStudySessionRepository;
+
   public String normalizeOptionalText(String value) {
     if (value == null || value.isBlank()) {
       return null;
@@ -115,6 +117,12 @@ public class HelperService {
   public PlanningPeriod findOwnedPlanningPeriod(String userEmail, Long planningPeriodId) {
     return planningPeriodRepository.findByIdAndUser_EmailIgnoreCase(planningPeriodId, normalizeEmail(userEmail))
                                    .orElseThrow(() -> new ResourceNotFoundException("Planning period not found"));
+  }
+
+  @Transactional(readOnly = true)
+  public PlannedStudySession findOwnedPlannedStudySession(String userEmail, Long plannedStudySessionId) {
+    return plannedStudySessionRepository.findByIdAndUser_EmailIgnoreCase(plannedStudySessionId, normalizeEmail(userEmail))
+                                        .orElseThrow(() -> new ResourceNotFoundException("Planned study session not found"));
   }
 
 }
