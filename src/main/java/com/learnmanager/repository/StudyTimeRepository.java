@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface StudyTimeRepository extends JpaRepository<StudyTime, Long> {
 
@@ -20,4 +21,12 @@ public interface StudyTimeRepository extends JpaRepository<StudyTime, Long> {
       String email,
       LocalDateTime endTime,
       LocalDateTime startTime);
+
+  List<StudyTime> findAllByUser_EmailIgnoreCaseOrderByStartTimeDesc(String email);
+
+  List<StudyTime> findAllByStudyModule_IdOrderByStartTimeDesc(Long studyModuleId);
+
+  List<StudyTime> findAllByLearningGoal_IdOrderByStartTimeDesc(Long learningGoalId);
+
+  Optional<StudyTime> findByIdAndUser_EmailIgnoreCase(Long id, String email);
 }

@@ -7,12 +7,14 @@ import com.learnmanager.entity.PlannedStudySession;
 import com.learnmanager.entity.StudyModule;
 import com.learnmanager.entity.StudyTime;
 import com.learnmanager.exception.BusinessRuleException;
+import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.StudyTimeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,6 +43,44 @@ public class StudyTimeService {
                                                                                request.startTime(),
                                                                                request.endTime(),
                                                                                helperService.normalizeOptionalText(request.notes()))));
+  }
+
+  @Transactional(readOnly = true)
+  public List<StudyTimeResponse> getAll(String userEmail) {
+    return studyTimeRepository.findAllByUser_EmailIgnoreCaseOrderByStartTimeDesc(helperService.normalizeEmail(userEmail))
+                              .stream()
+                              .map(StudyTimeResponse::fromEntity)
+                              .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public List<StudyTimeResponse> getAllByStudyModule(String userEmail, Long studyModuleId) {
+    StudyModule studyModule = helperService.findOwnedStudyModule(userEmail, studyModuleId);
+
+    return studyTimeRepository.findAllByStudyModule_IdOrderByStartTimeDesc(studyModule.getId())
+                              .stream()
+                              .map(StudyTimeResponse::fromEntity)
+                              .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public List<StudyTimeResponse> getAllByLearningGoal(String userEmail, Long learningGoalId) {
+    LearningGoal learningGoal = helperService.findOwnedLearningGoal(userEmail, learningGoalId);
+
+    return studyTimeRepository.findAllByLearningGoal_IdOrderByStartTimeDesc(learningGoal.getId())
+                              .stream()
+                              .map(StudyTimeResponse::fromEntity)
+                              .toList();
+  }
+
+  @Transactional(readOnly = true)
+  public StudyTimeResponse getById(String userEmail, Long studyTimeId) {
+    return StudyTimeResponse.fromEntity(findOwnedStudyTime(userEmail, studyTimeId));
+  }
+
+  private StudyTime findOwnedStudyTime(String userEmail, Long studyTimeId) {
+    return studyTimeRepository.findByIdAndUser_EmailIgnoreCase(studyTimeId, helperService.normalizeEmail(userEmail))
+                              .orElseThrow(() -> new ResourceNotFoundException("Study time not found"));
   }
 
   private LearningGoal resolveLearningGoal(String userEmail, Long learningGoalId, Long studyModuleId) {

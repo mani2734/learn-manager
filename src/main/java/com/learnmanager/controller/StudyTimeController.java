@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/studyTimes/")
 @RequiredArgsConstructor
@@ -20,5 +22,25 @@ public class StudyTimeController {
   @ResponseStatus(HttpStatus.CREATED)
   public StudyTimeResponse create(Authentication authentication, @Valid @RequestBody CreateStudyTimeRequest request) {
     return studyTimeService.create(authentication.getName(), request);
+  }
+
+  @GetMapping("getAll")
+  public List<StudyTimeResponse> getAll(Authentication authentication) {
+    return studyTimeService.getAll(authentication.getName());
+  }
+
+  @GetMapping("getAllByStudyModule/{studyModuleId}")
+  public List<StudyTimeResponse> getAllByStudyModule(Authentication authentication, @PathVariable Long studyModuleId) {
+    return studyTimeService.getAllByStudyModule(authentication.getName(), studyModuleId);
+  }
+
+  @GetMapping("getAllByLearningGoal/{learningGoalId}")
+  public List<StudyTimeResponse> getAllByLearningGoal(Authentication authentication, @PathVariable Long learningGoalId) {
+    return studyTimeService.getAllByLearningGoal(authentication.getName(), learningGoalId);
+  }
+
+  @GetMapping("get/{id}")
+  public StudyTimeResponse getById(Authentication authentication, @PathVariable Long id) {
+    return studyTimeService.getById(authentication.getName(), id);
   }
 }
