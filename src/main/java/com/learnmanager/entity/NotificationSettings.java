@@ -35,4 +35,23 @@ public class NotificationSettings extends BaseEntity {
   public NotificationSettings(User user) {
     this.user = user;
   }
+
+  public void update(
+      boolean plannedSessionReminderEnabled,
+      Integer plannedSessionReminderMinutes,
+      boolean inactivityReminderEnabled,
+      Integer inactivityThresholdDays,
+      boolean goalDeadlineReminderEnabled,
+      Integer goalDeadlineReminderDays,
+      boolean planDeviationReminderEnabled,
+      Integer planDeviationThresholdPercent) {
+    this.plannedSessionReminderEnabled = plannedSessionReminderEnabled;
+    this.plannedSessionReminderMinutes = plannedSessionReminderMinutes;
+    this.inactivityReminderEnabled = inactivityReminderEnabled;
+    this.inactivityThresholdDays = inactivityThresholdDays;
+    this.goalDeadlineReminderEnabled = goalDeadlineReminderEnabled;
+    this.goalDeadlineReminderDays = goalDeadlineReminderDays;
+    this.planDeviationReminderEnabled = planDeviationReminderEnabled;
+    this.planDeviationThresholdPercent = planDeviationThresholdPercent;
+  }
 }
