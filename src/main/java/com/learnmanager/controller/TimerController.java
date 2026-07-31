@@ -1,8 +1,8 @@
 package com.learnmanager.controller;
 
-import com.learnmanager.dto.StartTimerRequest;
-import com.learnmanager.dto.StudyTimeResponse;
-import com.learnmanager.dto.TimerResponse;
+import com.learnmanager.dto.request.create.StartTimerRequest;
+import com.learnmanager.dto.response.StudyTimeResponse;
+import com.learnmanager.dto.response.TimerResponse;
 import com.learnmanager.service.TimerService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

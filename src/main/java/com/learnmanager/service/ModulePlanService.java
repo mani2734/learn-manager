@@ -1,8 +1,8 @@
 package com.learnmanager.service;
 
-import com.learnmanager.dto.CreateModulePlanRequest;
-import com.learnmanager.dto.ModulePlanResponse;
-import com.learnmanager.dto.UpdateModulePlanRequest;
+import com.learnmanager.dto.request.create.CreateModulePlanRequest;
+import com.learnmanager.dto.request.update.UpdateModulePlanRequest;
+import com.learnmanager.dto.response.ModulePlanResponse;
 import com.learnmanager.entity.ModulePlan;
 import com.learnmanager.entity.PlanningPeriod;
 import com.learnmanager.entity.StudyModule;

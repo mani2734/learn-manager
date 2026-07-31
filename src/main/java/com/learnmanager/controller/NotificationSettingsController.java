@@ -1,7 +1,7 @@
 package com.learnmanager.controller;
 
-import com.learnmanager.dto.NotificationSettingsResponse;
-import com.learnmanager.dto.UpdateNotificationSettingsRequest;
+import com.learnmanager.dto.request.update.UpdateNotificationSettingsRequest;
+import com.learnmanager.dto.response.NotificationSettingsResponse;
 import com.learnmanager.service.NotificationSettingsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

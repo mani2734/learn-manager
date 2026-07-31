@@ -1,8 +1,8 @@
 package com.learnmanager.controller;
 
-import com.learnmanager.dto.AuthenticationResponse;
-import com.learnmanager.dto.LoginRequest;
-import com.learnmanager.dto.RegisterRequest;
+import com.learnmanager.dto.request.auth.LoginRequest;
+import com.learnmanager.dto.request.auth.RegisterRequest;
+import com.learnmanager.dto.response.auth.AuthenticationResponse;
 import com.learnmanager.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

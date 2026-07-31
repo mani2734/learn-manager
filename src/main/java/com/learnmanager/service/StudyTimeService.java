@@ -1,8 +1,8 @@
 package com.learnmanager.service;
 
-import com.learnmanager.dto.CreateStudyTimeRequest;
-import com.learnmanager.dto.StudyTimeResponse;
-import com.learnmanager.dto.UpdateStudyTimeRequest;
+import com.learnmanager.dto.request.create.CreateStudyTimeRequest;
+import com.learnmanager.dto.request.update.UpdateStudyTimeRequest;
+import com.learnmanager.dto.response.StudyTimeResponse;
 import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.PlannedStudySession;
 import com.learnmanager.entity.StudyModule;

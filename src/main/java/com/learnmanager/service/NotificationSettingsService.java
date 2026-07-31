@@ -1,7 +1,7 @@
 package com.learnmanager.service;
 
-import com.learnmanager.dto.NotificationSettingsResponse;
-import com.learnmanager.dto.UpdateNotificationSettingsRequest;
+import com.learnmanager.dto.request.update.UpdateNotificationSettingsRequest;
+import com.learnmanager.dto.response.NotificationSettingsResponse;
 import com.learnmanager.entity.NotificationSettings;
 import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.NotificationSettingsRepository;

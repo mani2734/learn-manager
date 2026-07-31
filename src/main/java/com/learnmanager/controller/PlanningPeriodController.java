@@ -1,8 +1,8 @@
 package com.learnmanager.controller;
 
-import com.learnmanager.dto.CreatePlanningPeriodRequest;
-import com.learnmanager.dto.PlanningPeriodResponse;
-import com.learnmanager.dto.UpdatePlanningPeriodRequest;
+import com.learnmanager.dto.request.create.CreatePlanningPeriodRequest;
+import com.learnmanager.dto.request.update.UpdatePlanningPeriodRequest;
+import com.learnmanager.dto.response.PlanningPeriodResponse;
 import com.learnmanager.service.PlanningPeriodService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

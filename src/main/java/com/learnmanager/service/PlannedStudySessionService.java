@@ -1,9 +1,9 @@
 package com.learnmanager.service;
 
-import com.learnmanager.dto.CreatePlannedStudySessionRequest;
-import com.learnmanager.dto.CreatePlannedStudySessionSeriesRequest;
-import com.learnmanager.dto.PlannedStudySessionResponse;
-import com.learnmanager.dto.UpdatePlannedStudySessionRequest;
+import com.learnmanager.dto.request.create.CreatePlannedStudySessionRequest;
+import com.learnmanager.dto.request.create.CreatePlannedStudySessionSeriesRequest;
+import com.learnmanager.dto.request.update.UpdatePlannedStudySessionRequest;
+import com.learnmanager.dto.response.PlannedStudySessionResponse;
 import com.learnmanager.entity.PlannedStudySession;
 import com.learnmanager.entity.StudyModule;
 import com.learnmanager.entity.enums.RecurrenceFrequency;

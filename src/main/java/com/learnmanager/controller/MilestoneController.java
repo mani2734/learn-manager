@@ -1,8 +1,8 @@
 package com.learnmanager.controller;
 
-import com.learnmanager.dto.CreateMilestoneRequest;
-import com.learnmanager.dto.MilestoneResponse;
-import com.learnmanager.dto.UpdateMilestoneRequest;
+import com.learnmanager.dto.request.create.CreateMilestoneRequest;
+import com.learnmanager.dto.request.update.UpdateMilestoneRequest;
+import com.learnmanager.dto.response.MilestoneResponse;
 import com.learnmanager.service.MilestoneService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

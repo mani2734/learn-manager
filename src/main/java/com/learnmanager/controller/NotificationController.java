@@ -1,6 +1,6 @@
 package com.learnmanager.controller;
 
-import com.learnmanager.dto.NotificationResponse;
+import com.learnmanager.dto.response.NotificationResponse;
 import com.learnmanager.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

@@ -1,8 +1,8 @@
 package com.learnmanager.controller;
 
-import com.learnmanager.dto.CreateLearningGoalRequest;
-import com.learnmanager.dto.LearningGoalResponse;
-import com.learnmanager.dto.UpdateLearningGoalRequest;
+import com.learnmanager.dto.request.create.CreateLearningGoalRequest;
+import com.learnmanager.dto.request.update.UpdateLearningGoalRequest;
+import com.learnmanager.dto.response.LearningGoalResponse;
 import com.learnmanager.service.LearningGoalService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

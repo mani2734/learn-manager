@@ -1,8 +1,8 @@
 package com.learnmanager.service;
 
-import com.learnmanager.dto.CreateMilestoneRequest;
-import com.learnmanager.dto.MilestoneResponse;
-import com.learnmanager.dto.UpdateMilestoneRequest;
+import com.learnmanager.dto.request.create.CreateMilestoneRequest;
+import com.learnmanager.dto.request.update.UpdateMilestoneRequest;
+import com.learnmanager.dto.response.MilestoneResponse;
 import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.Milestone;
 import com.learnmanager.exception.ResourceNotFoundException;

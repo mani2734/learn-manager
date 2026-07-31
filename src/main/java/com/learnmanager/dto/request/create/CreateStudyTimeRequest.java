@@ -1,0 +1,21 @@
+package com.learnmanager.dto.request.create;
+
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
+
+import java.time.LocalDateTime;
+
+public record CreateStudyTimeRequest(
+
+    @NotNull(message = "Study module ID is required") @Positive(message = "Study module ID must be greater than zero") Long studyModuleId,
+
+    @Positive(message = "Learning goal ID must be greater than zero") Long learningGoalId,
+
+    @Positive(message = "Planned study session ID must be greater than zero") Long plannedStudySessionId,
+
+    @NotNull(message = "Start time is required") LocalDateTime startTime,
+
+    @NotNull(message = "End time is required") LocalDateTime endTime
+
+) {
+}

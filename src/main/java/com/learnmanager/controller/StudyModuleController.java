@@ -1,8 +1,8 @@
 package com.learnmanager.controller;
 
-import com.learnmanager.dto.CreateStudyModuleRequest;
-import com.learnmanager.dto.StudyModuleResponse;
-import com.learnmanager.dto.UpdateStudyModuleRequest;
+import com.learnmanager.dto.request.create.CreateStudyModuleRequest;
+import com.learnmanager.dto.request.update.UpdateStudyModuleRequest;
+import com.learnmanager.dto.response.StudyModuleResponse;
 import com.learnmanager.service.StudyModuleService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

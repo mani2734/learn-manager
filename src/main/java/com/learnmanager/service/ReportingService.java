@@ -1,6 +1,6 @@
 package com.learnmanager.service;
 
-import com.learnmanager.dto.*;
+import com.learnmanager.dto.response.*;
 import com.learnmanager.entity.PlannedStudySession;
 import com.learnmanager.entity.StudyTime;
 import com.learnmanager.repository.PlannedStudySessionRepository;

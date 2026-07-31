@@ -1,6 +1,6 @@
 package com.learnmanager.controller;
 
-import com.learnmanager.dto.ReportingDashboardResponse;
+import com.learnmanager.dto.response.ReportingDashboardResponse;
 import com.learnmanager.service.ReportingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;

@@ -1,6 +1,6 @@
 package com.learnmanager.service;
 
-import com.learnmanager.dto.NotificationResponse;
+import com.learnmanager.dto.response.NotificationResponse;
 import com.learnmanager.entity.Notification;
 import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.NotificationRepository;
