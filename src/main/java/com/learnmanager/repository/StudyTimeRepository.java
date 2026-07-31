@@ -3,6 +3,7 @@ package com.learnmanager.repository;
 import com.learnmanager.entity.StudyTime;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StudyTimeRepository extends JpaRepository<StudyTime, Long> {
@@ -14,4 +15,9 @@ public interface StudyTimeRepository extends JpaRepository<StudyTime, Long> {
   void deleteAllByLearningGoal_Id(Long learningGoalId);
 
   boolean existsByPlannedStudySession_Id(Long plannedStudySessionId);
+
+  boolean existsByUser_EmailIgnoreCaseAndStartTimeLessThanAndEndTimeGreaterThan(
+      String email,
+      LocalDateTime endTime,
+      LocalDateTime startTime);
 }
