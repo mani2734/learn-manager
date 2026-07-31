@@ -23,7 +23,7 @@ public class SecurityFilterConfig {
                                                                 "/swagger-ui/**",
                                                                 "/v3/api-docs",
                                                                 "/v3/api-docs/**")
-                                                            .permitAll()
+                                                            .permitAll().requestMatchers("/api/admin/**").hasRole("ADMIN")
                                                             .anyRequest()
                                                             .authenticated())
                .oauth2ResourceServer(resourceServer -> resourceServer.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))

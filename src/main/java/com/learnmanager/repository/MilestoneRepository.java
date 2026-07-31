@@ -19,4 +19,6 @@ public interface MilestoneRepository extends JpaRepository<Milestone, Long> {
       Long learningGoalId);
 
   Optional<Milestone> findByIdAndLearningGoal_StudyModule_User_EmailIgnoreCase(Long id, String email);
+
+  List<Milestone> findAllByLearningGoal_StudyModule_User_EmailIgnoreCase(String email);
 }

@@ -26,4 +26,6 @@ public interface ModulePlanRepository extends JpaRepository<ModulePlan, Long> {
       Long studyModuleId,
       Integer periodNumber,
       Long excludedModulePlanId);
+
+  List<ModulePlan> findAllByStudyModule_User_EmailIgnoreCaseOrderByCreatedAtDesc(String email);
 }
