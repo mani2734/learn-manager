@@ -2,6 +2,7 @@ package com.learnmanager.service;
 
 import com.learnmanager.dto.CreateStudyTimeRequest;
 import com.learnmanager.dto.StudyTimeResponse;
+import com.learnmanager.dto.UpdateStudyTimeRequest;
 import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.PlannedStudySession;
 import com.learnmanager.entity.StudyModule;
@@ -111,6 +112,35 @@ public class StudyTimeService {
     return plannedStudySession;
   }
 
+  @Transactional
+  public StudyTimeResponse update(String userEmail, Long studyTimeId, UpdateStudyTimeRequest request) {
+    StudyTime studyTime = findOwnedStudyTime(userEmail, studyTimeId);
+
+    validateTimeRange(request.startTime(), request.endTime());
+    validateNoOverlapForUpdate(studyTime.getUser().getEmail(), studyTimeId, request.startTime(), request.endTime());
+
+    LearningGoal learningGoal = resolveLearningGoal(userEmail, request.learningGoalId(), studyTime.getStudyModule().getId());
+
+    PlannedStudySession plannedStudySession = resolvePlannedStudySession(
+        userEmail,
+        request.plannedStudySessionId(),
+        studyTime.getStudyModule().getId());
+
+    studyTime.update(
+        learningGoal,
+        plannedStudySession,
+        request.startTime(),
+        request.endTime(),
+        helperService.normalizeOptionalText(request.notes()));
+
+    return StudyTimeResponse.fromEntity(studyTimeRepository.save(studyTime));
+  }
+
+  @Transactional
+  public void delete(String userEmail, Long studyTimeId) {
+    studyTimeRepository.delete(findOwnedStudyTime(userEmail, studyTimeId));
+  }
+
   private void validateTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
     if (!endTime.isAfter(startTime)) {
       throw new BusinessRuleException("End time must be after start time");
@@ -122,6 +152,17 @@ public class StudyTimeService {
         userEmail,
         endTime,
         startTime);
+
+    if (overlapsExistingStudyTime) {
+      throw new BusinessRuleException("Study time overlaps an existing study time");
+    }
+  }
+
+  private void validateNoOverlapForUpdate(String userEmail, Long studyTimeId, LocalDateTime startTime, LocalDateTime endTime) {
+    boolean overlapsExistingStudyTime = studyTimeRepository.existsByUser_EmailIgnoreCaseAndIdNotAndStartTimeLessThanAndEndTimeGreaterThan(userEmail,
+                                                                                                                                          studyTimeId,
+                                                                                                                                          endTime,
+                                                                                                                                          startTime);
 
     if (overlapsExistingStudyTime) {
       throw new BusinessRuleException("Study time overlaps an existing study time");

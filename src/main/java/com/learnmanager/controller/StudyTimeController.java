@@ -2,6 +2,7 @@ package com.learnmanager.controller;
 
 import com.learnmanager.dto.CreateStudyTimeRequest;
 import com.learnmanager.dto.StudyTimeResponse;
+import com.learnmanager.dto.UpdateStudyTimeRequest;
 import com.learnmanager.service.StudyTimeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -42,5 +43,19 @@ public class StudyTimeController {
   @GetMapping("get/{id}")
   public StudyTimeResponse getById(Authentication authentication, @PathVariable Long id) {
     return studyTimeService.getById(authentication.getName(), id);
+  }
+
+  @PutMapping("update/{id}")
+  public StudyTimeResponse update(
+      Authentication authentication,
+      @PathVariable Long id,
+      @Valid @RequestBody UpdateStudyTimeRequest request) {
+    return studyTimeService.update(authentication.getName(), id, request);
+  }
+
+  @DeleteMapping("delete/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void delete(Authentication authentication, @PathVariable Long id) {
+    studyTimeService.delete(authentication.getName(), id);
   }
 }

@@ -29,4 +29,10 @@ public interface StudyTimeRepository extends JpaRepository<StudyTime, Long> {
   List<StudyTime> findAllByLearningGoal_IdOrderByStartTimeDesc(Long learningGoalId);
 
   Optional<StudyTime> findByIdAndUser_EmailIgnoreCase(Long id, String email);
+
+  boolean existsByUser_EmailIgnoreCaseAndIdNotAndStartTimeLessThanAndEndTimeGreaterThan(
+      String email,
+      Long excludedStudyTimeId,
+      LocalDateTime endTime,
+      LocalDateTime startTime);
 }

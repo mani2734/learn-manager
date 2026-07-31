@@ -62,4 +62,18 @@ public class StudyTime extends BaseEntity {
 
     return Duration.between(startTime, endTime).toMinutes();
   }
+
+  public void update(
+      LearningGoal learningGoal,
+      PlannedStudySession plannedStudySession,
+      LocalDateTime startTime,
+      LocalDateTime endTime,
+      String notes) {
+    this.learningGoal = learningGoal;
+    this.plannedStudySession = plannedStudySession;
+    this.startTime = startTime;
+    this.endTime = endTime;
+    this.notes = notes;
+  }
+
 }
