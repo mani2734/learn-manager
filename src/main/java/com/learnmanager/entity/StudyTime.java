@@ -35,23 +35,18 @@ public class StudyTime extends BaseEntity {
 
   @Column(nullable = false) private LocalDateTime endTime;
 
-  @Column(length = 2000) private String notes;
-
   public StudyTime(
       User user,
       StudyModule studyModule,
       LearningGoal learningGoal,
       PlannedStudySession plannedStudySession,
-      LocalDateTime startTime,
-      LocalDateTime endTime,
-      String notes) {
+      LocalDateTime startTime, LocalDateTime endTime) {
     this.user = user;
     this.studyModule = studyModule;
     this.learningGoal = learningGoal;
     this.plannedStudySession = plannedStudySession;
     this.startTime = startTime;
     this.endTime = endTime;
-    this.notes = notes;
   }
 
   @Transient
@@ -66,14 +61,11 @@ public class StudyTime extends BaseEntity {
   public void update(
       LearningGoal learningGoal,
       PlannedStudySession plannedStudySession,
-      LocalDateTime startTime,
-      LocalDateTime endTime,
-      String notes) {
+      LocalDateTime startTime, LocalDateTime endTime) {
     this.learningGoal = learningGoal;
     this.plannedStudySession = plannedStudySession;
     this.startTime = startTime;
     this.endTime = endTime;
-    this.notes = notes;
   }
 
 }

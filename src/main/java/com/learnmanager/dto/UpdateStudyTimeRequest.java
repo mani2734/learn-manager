@@ -2,7 +2,6 @@ package com.learnmanager.dto;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
 
@@ -14,9 +13,7 @@ public record UpdateStudyTimeRequest(
 
     @NotNull(message = "Start time is required") LocalDateTime startTime,
 
-    @NotNull(message = "End time is required") LocalDateTime endTime,
-
-    @Size(max = 2000, message = "Notes must not exceed 2000 characters") String notes
+    @NotNull(message = "End time is required") LocalDateTime endTime
 
 ) {
 

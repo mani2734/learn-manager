@@ -1,13 +1,12 @@
 package com.learnmanager.service;
 
 import com.learnmanager.dto.StartTimerRequest;
+import com.learnmanager.dto.StudyTimeResponse;
 import com.learnmanager.dto.TimerResponse;
-import com.learnmanager.entity.LearningGoal;
-import com.learnmanager.entity.PlannedStudySession;
-import com.learnmanager.entity.StudyModule;
-import com.learnmanager.entity.Timer;
+import com.learnmanager.entity.*;
 import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.exception.ResourceNotFoundException;
+import com.learnmanager.repository.StudyTimeRepository;
 import com.learnmanager.repository.TimerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,8 @@ import java.time.LocalDateTime;
 public class TimerService {
 
   private final TimerRepository timerRepository;
+
+  private final StudyTimeRepository studyTimeRepository;
 
   private final HelperService helperService;
 
@@ -60,6 +61,29 @@ public class TimerService {
     return learningGoal;
   }
 
+  @Transactional
+  public StudyTimeResponse stop(String userEmail) {
+    Timer timer = findActiveTimer(userEmail);
+
+    LocalDateTime endTime = LocalDateTime.now();
+
+    validateTimeRange(timer.getStartTime(), endTime);
+
+    helperService.validateNoStudyTimeOverlap(timer.getUser().getEmail(), timer.getStartTime(), endTime);
+
+    StudyTime studyTime = studyTimeRepository.save(new StudyTime(
+        timer.getUser(),
+                                                                 timer.getStudyModule(),
+                                                                 timer.getLearningGoal(),
+                                                                 timer.getPlannedStudySession(),
+                                                                 timer.getStartTime(),
+                                                                 endTime));
+
+    timerRepository.delete(timer);
+
+    return StudyTimeResponse.fromEntity(studyTime);
+  }
+
   private PlannedStudySession resolvePlannedStudySession(String userEmail, Long plannedStudySessionId, Long studyModuleId) {
     if (plannedStudySessionId == null) {
       return null;
@@ -83,5 +107,11 @@ public class TimerService {
   private Timer findActiveTimer(String userEmail) {
     return timerRepository.findByUser_EmailIgnoreCase(helperService.normalizeEmail(userEmail))
                           .orElseThrow(() -> new ResourceNotFoundException("Active timer not found"));
+  }
+
+  private void validateTimeRange(LocalDateTime startTime, LocalDateTime endTime) {
+    if (!endTime.isAfter(startTime)) {
+      throw new BusinessRuleException("Timer duration must be greater than zero");
+    }
   }
 }

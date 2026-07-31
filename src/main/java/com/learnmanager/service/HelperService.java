@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDateTime;
 import java.util.Locale;
 
 @Service
@@ -123,6 +124,17 @@ public class HelperService {
   public PlannedStudySession findOwnedPlannedStudySession(String userEmail, Long plannedStudySessionId) {
     return plannedStudySessionRepository.findByIdAndUser_EmailIgnoreCase(plannedStudySessionId, normalizeEmail(userEmail))
                                         .orElseThrow(() -> new ResourceNotFoundException("Planned study session not found"));
+  }
+
+  @Transactional(readOnly = true)
+  public void validateNoStudyTimeOverlap(String userEmail, LocalDateTime startTime, LocalDateTime endTime) {
+    boolean overlapsExistingStudyTime = studyTimeRepository.existsByUser_EmailIgnoreCaseAndStartTimeLessThanAndEndTimeGreaterThan(normalizeEmail(userEmail),
+                                                                                                                                  endTime,
+                                                                                                                                  startTime);
+
+    if (overlapsExistingStudyTime) {
+      throw new BusinessRuleException("Study time overlaps an existing study time");
+    }
   }
 
 }

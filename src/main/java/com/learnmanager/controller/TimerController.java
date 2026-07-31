@@ -1,6 +1,7 @@
 package com.learnmanager.controller;
 
 import com.learnmanager.dto.StartTimerRequest;
+import com.learnmanager.dto.StudyTimeResponse;
 import com.learnmanager.dto.TimerResponse;
 import com.learnmanager.service.TimerService;
 import jakarta.validation.Valid;
@@ -25,5 +26,10 @@ public class TimerController {
   @GetMapping("getActive")
   public TimerResponse getActive(Authentication authentication) {
     return timerService.getActive(authentication.getName());
+  }
+
+  @GetMapping("stop")
+  public StudyTimeResponse stop(Authentication authentication) {
+    return timerService.stop(authentication.getName());
   }
 }
