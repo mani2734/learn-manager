@@ -2,6 +2,7 @@ package com.learnmanager.controller;
 
 import com.learnmanager.dto.CreatePlannedStudySessionRequest;
 import com.learnmanager.dto.PlannedStudySessionResponse;
+import com.learnmanager.dto.UpdatePlannedStudySessionRequest;
 import com.learnmanager.service.PlannedStudySessionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,14 @@ public class PlannedStudySessionController {
   @GetMapping("get/{id}")
   public PlannedStudySessionResponse getById(Authentication authentication, @PathVariable Long id) {
     return plannedStudySessionService.getById(authentication.getName(), id);
+  }
+
+  @PutMapping("update/{id}")
+  public PlannedStudySessionResponse update(
+      Authentication authentication,
+      @PathVariable Long id,
+      @Valid @RequestBody UpdatePlannedStudySessionRequest request) {
+    return plannedStudySessionService.update(authentication.getName(), id, request);
   }
 
 }

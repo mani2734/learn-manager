@@ -2,6 +2,7 @@ package com.learnmanager.service;
 
 import com.learnmanager.dto.CreatePlannedStudySessionRequest;
 import com.learnmanager.dto.PlannedStudySessionResponse;
+import com.learnmanager.dto.UpdatePlannedStudySessionRequest;
 import com.learnmanager.entity.PlannedStudySession;
 import com.learnmanager.entity.StudyModule;
 import com.learnmanager.exception.BusinessRuleException;
@@ -56,6 +57,17 @@ public class PlannedStudySessionService {
   @Transactional(readOnly = true)
   public PlannedStudySessionResponse getById(String userEmail, Long plannedStudySessionId) {
     return PlannedStudySessionResponse.fromEntity(helperService.findOwnedPlannedStudySession(userEmail, plannedStudySessionId));
+  }
+
+  @Transactional
+  public PlannedStudySessionResponse update(String userEmail, Long plannedStudySessionId, UpdatePlannedStudySessionRequest request) {
+    PlannedStudySession plannedStudySession = helperService.findOwnedPlannedStudySession(userEmail, plannedStudySessionId);
+
+    validateTimeRange(request.startTime(), request.endTime());
+
+    plannedStudySession.update(request.title().trim(), request.startTime(), request.endTime());
+
+    return PlannedStudySessionResponse.fromEntity(plannedStudySessionRepository.save(plannedStudySession));
   }
 
   private void validateTimeRange(LocalDateTime startTime, LocalDateTime endTime) {

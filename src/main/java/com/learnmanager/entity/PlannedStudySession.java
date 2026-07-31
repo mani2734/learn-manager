@@ -28,14 +28,15 @@ public class PlannedStudySession extends BaseEntity {
 
   @Column(nullable = false) private LocalDateTime endTime;
 
-  public PlannedStudySession(
-      User user,
-      StudyModule studyModule,
-      String title,
-      LocalDateTime startTime,
-      LocalDateTime endTime) {
+  public PlannedStudySession(User user, StudyModule studyModule, String title, LocalDateTime startTime, LocalDateTime endTime) {
     this.user = user;
     this.studyModule = studyModule;
+    this.title = title;
+    this.startTime = startTime;
+    this.endTime = endTime;
+  }
+
+  public void update(String title, LocalDateTime startTime, LocalDateTime endTime) {
     this.title = title;
     this.startTime = startTime;
     this.endTime = endTime;
