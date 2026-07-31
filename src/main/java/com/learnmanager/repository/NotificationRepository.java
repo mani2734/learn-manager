@@ -10,7 +10,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
   List<Notification> findAllByUser_EmailIgnoreCaseOrderByCreatedAtDesc(String email);
 
-  List<Notification> findAllByUser_EmailIgnoreCaseAndReadStatusFalseOrderByCreatedAtDesc(String email);
+  List<Notification> findAllByUser_EmailIgnoreCaseAndNotificationReadFalseOrderByCreatedAtDesc(String email);
 
   Optional<Notification> findByIdAndUser_EmailIgnoreCase(Long id, String email);
 }

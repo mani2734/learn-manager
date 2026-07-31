@@ -28,7 +28,8 @@ public class NotificationService {
 
   @Transactional(readOnly = true)
   public List<NotificationResponse> getUnread(String userEmail) {
-    return notificationRepository.findAllByUser_EmailIgnoreCaseAndReadStatusFalseOrderByCreatedAtDesc(helperService.normalizeEmail(userEmail))
+    return notificationRepository.findAllByUser_EmailIgnoreCaseAndNotificationReadFalseOrderByCreatedAtDesc(helperService.normalizeEmail(
+                                     userEmail))
                                  .stream()
                                  .map(NotificationResponse::fromEntity)
                                  .toList();
@@ -50,7 +51,7 @@ public class NotificationService {
 
   @Transactional
   public void markAllAsRead(String userEmail) {
-    List<Notification> unreadNotifications = notificationRepository.findAllByUser_EmailIgnoreCaseAndReadStatusFalseOrderByCreatedAtDesc(
+    List<Notification> unreadNotifications = notificationRepository.findAllByUser_EmailIgnoreCaseAndNotificationReadFalseOrderByCreatedAtDesc(
         helperService.normalizeEmail(userEmail));
 
     unreadNotifications.forEach(n -> n.setNotificationRead(true));
