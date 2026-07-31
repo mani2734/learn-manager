@@ -4,6 +4,7 @@ import com.learnmanager.dto.response.AdminUserResponse;
 import com.learnmanager.dto.response.TestDataGenerationResponse;
 import com.learnmanager.entity.*;
 import com.learnmanager.entity.enums.Role;
+import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -57,6 +58,11 @@ public class AdminService {
   @Transactional(readOnly = true)
   public List<AdminUserResponse> getAllUsers() {
     return userRepository.findAll().stream().map(AdminUserResponse::fromEntity).toList();
+  }
+
+  @Transactional(readOnly = true)
+  public AdminUserResponse getUserById(Long userId) {
+    return AdminUserResponse.fromEntity(userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found")));
   }
 
   @Transactional
