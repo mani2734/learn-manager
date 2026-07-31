@@ -84,6 +84,11 @@ public class TimerService {
     return StudyTimeResponse.fromEntity(studyTime);
   }
 
+  @Transactional
+  public void cancel(String userEmail) {
+    timerRepository.delete(findActiveTimer(userEmail));
+  }
+
   private PlannedStudySession resolvePlannedStudySession(String userEmail, Long plannedStudySessionId, Long studyModuleId) {
     if (plannedStudySessionId == null) {
       return null;

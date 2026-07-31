@@ -32,4 +32,10 @@ public class TimerController {
   public StudyTimeResponse stop(Authentication authentication) {
     return timerService.stop(authentication.getName());
   }
+
+  @DeleteMapping("cancel")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void cancel(Authentication authentication) {
+    timerService.cancel(authentication.getName());
+  }
 }
