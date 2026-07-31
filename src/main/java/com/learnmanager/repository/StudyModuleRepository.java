@@ -12,4 +12,6 @@ public interface StudyModuleRepository extends JpaRepository<StudyModule, Long> 
       String email);
 
   Optional<StudyModule> findByIdAndUserEmailIgnoreCase(Long id, String email);
+
+  List<StudyModule> findAllByUserEmailIgnoreCaseOrderByNameAsc(String email);
 }

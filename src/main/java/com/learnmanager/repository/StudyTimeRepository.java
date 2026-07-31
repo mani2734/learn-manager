@@ -35,4 +35,11 @@ public interface StudyTimeRepository extends JpaRepository<StudyTime, Long> {
       Long excludedStudyTimeId,
       LocalDateTime endTime,
       LocalDateTime startTime);
+
+  List<StudyTime> findAllByUser_EmailIgnoreCaseAndStartTimeLessThanAndEndTimeGreaterThan(
+      String email,
+      LocalDateTime rangeEnd,
+      LocalDateTime rangeStart);
+
+  List<StudyTime> findTop5ByUser_EmailIgnoreCaseOrderByStartTimeDesc(String email);
 }
