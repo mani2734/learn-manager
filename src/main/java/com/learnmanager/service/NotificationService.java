@@ -48,6 +48,16 @@ public class NotificationService {
     return NotificationResponse.fromEntity(notificationRepository.save(notification));
   }
 
+  @Transactional
+  public void markAllAsRead(String userEmail) {
+    List<Notification> unreadNotifications = notificationRepository.findAllByUser_EmailIgnoreCaseAndReadStatusFalseOrderByCreatedAtDesc(
+        helperService.normalizeEmail(userEmail));
+
+    unreadNotifications.forEach(n -> n.setNotificationRead(true));
+
+    notificationRepository.saveAll(unreadNotifications);
+  }
+
   private Notification findOwnedNotification(String userEmail, Long notificationId) {
     return notificationRepository.findByIdAndUser_EmailIgnoreCase(notificationId, helperService.normalizeEmail(userEmail))
                                  .orElseThrow(() -> new ResourceNotFoundException("Notification not found"));

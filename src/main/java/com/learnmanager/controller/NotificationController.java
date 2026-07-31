@@ -3,6 +3,7 @@ package com.learnmanager.controller;
 import com.learnmanager.dto.NotificationResponse;
 import com.learnmanager.service.NotificationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,5 +34,11 @@ public class NotificationController {
   @PutMapping("markAsRead/{id}")
   public NotificationResponse markAsRead(Authentication authentication, @PathVariable Long id) {
     return notificationService.markAsRead(authentication.getName(), id);
+  }
+
+  @PutMapping("markAllAsRead")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void markAllAsRead(Authentication authentication) {
+    notificationService.markAllAsRead(authentication.getName());
   }
 }
