@@ -27,10 +27,13 @@ public class Notification extends BaseEntity {
 
   @Column(nullable = false) private boolean notificationRead = false;
 
-  public Notification(User user, NotificationType type, String title, String message) {
+  @Column(length = 150, unique = true) private String referenceKey;
+
+  public Notification(User user, NotificationType type, String title, String message, String referenceKey) {
     this.user = user;
     this.type = type;
     this.title = title;
     this.message = message;
+    this.referenceKey = referenceKey;
   }
 }

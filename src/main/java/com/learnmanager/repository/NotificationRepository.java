@@ -13,4 +13,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
   List<Notification> findAllByUser_EmailIgnoreCaseAndNotificationReadFalseOrderByCreatedAtDesc(String email);
 
   Optional<Notification> findByIdAndUser_EmailIgnoreCase(Long id, String email);
+
+  boolean existsByReferenceKey(String referenceKey);
 }
