@@ -1,9 +1,12 @@
 package com.learnmanager.controller;
 
+import com.learnmanager.dto.request.auth.ResetUserPasswordRequest;
 import com.learnmanager.dto.response.AdminUserResponse;
 import com.learnmanager.dto.response.TestDataGenerationResponse;
 import com.learnmanager.service.AdminService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,5 +41,11 @@ public class AdminController {
   @PutMapping("users/activate/{id}")
   public AdminUserResponse activateUser(@PathVariable Long id) {
     return adminService.activateUser(id);
+  }
+
+  @PutMapping("users/resetPassword/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void resetUserPassword(@PathVariable Long id, @Valid @RequestBody ResetUserPasswordRequest request) {
+    adminService.resetUserPassword(id, request);
   }
 }

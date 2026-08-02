@@ -1,5 +1,6 @@
 package com.learnmanager.service;
 
+import com.learnmanager.dto.request.auth.ResetUserPasswordRequest;
 import com.learnmanager.dto.response.AdminUserResponse;
 import com.learnmanager.dto.response.TestDataGenerationResponse;
 import com.learnmanager.entity.*;
@@ -99,6 +100,17 @@ public class AdminService {
     user.activate();
 
     return AdminUserResponse.fromEntity(userRepository.save(user));
+  }
+
+  @Transactional
+  public void resetUserPassword(Long userId, ResetUserPasswordRequest request) {
+    User user = findUserById(userId);
+
+    validateUserCanBeManaged(user);
+
+    user.updatePasswordHash(passwordEncoder.encode(request.password()));
+
+    userRepository.save(user);
   }
 
   private void deleteTestUser(String email) {
@@ -202,11 +214,7 @@ public class AdminService {
     LocalDateTime futureStartTime = now.plusDays(2L + moduleIndex).withHour(17 + moduleIndex).withMinute(0);
 
     plannedStudySessions.add(new PlannedStudySession(
-        user,
-                                                     studyModule,
-                                                     "Upcoming study session",
-                                                     futureStartTime,
-                                                     futureStartTime.plusMinutes(90)));
+        user, studyModule, "Upcoming study session", futureStartTime, futureStartTime.plusMinutes(90)));
 
     return plannedStudySessions;
   }

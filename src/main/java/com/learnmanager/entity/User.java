@@ -32,6 +32,10 @@ public class User extends BaseEntity {
     this.active = true;
   }
 
+  public void updatePasswordHash(String passwordHash) {
+    this.passwordHash = passwordHash;
+  }
+
   public User(String email, String passwordHash) {
     this.email = email;
     this.passwordHash = passwordHash;
