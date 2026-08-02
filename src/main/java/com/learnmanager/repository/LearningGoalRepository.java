@@ -23,7 +23,7 @@ public interface LearningGoalRepository extends JpaRepository<LearningGoal, Long
   void deleteAllByStudyModule_Id(
       Long studyModuleId);
 
-  List<LearningGoal> findAllByStudyModule_User_EmailIgnoreCaseAndCompletedFalseAndDeadlineBetweenOrderByDeadlineAsc(
+  List<LearningGoal> findAllByStudyModule_User_EmailIgnoreCaseFalseAndDeadlineBetweenOrderByDeadlineAsc(
       String email,
       LocalDate deadlineStart,
       LocalDate deadlineEnd);

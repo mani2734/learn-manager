@@ -23,4 +23,9 @@ public interface PlanningPeriodRepository extends JpaRepository<PlanningPeriod, 
       Long excludedPlanningPeriodId,
       LocalDate newEndDate,
       LocalDate newStartDate);
+
+  Optional<PlanningPeriod> findFirstByUser_EmailIgnoreCaseAndStartDateLessThanEqualAndEndDateGreaterThanEqualOrderByStartDateDesc(
+      String email,
+      LocalDate latestStartDate,
+      LocalDate earliestEndDate);
 }

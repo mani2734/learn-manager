@@ -28,4 +28,6 @@ public interface ModulePlanRepository extends JpaRepository<ModulePlan, Long> {
       Long excludedModulePlanId);
 
   List<ModulePlan> findAllByStudyModule_User_EmailIgnoreCaseOrderByCreatedAtDesc(String email);
+
+  List<ModulePlan> findAllByPlanningPeriod_IdAndPeriodNumberOrderByStudyModule_NameAsc(Long planningPeriodId, Integer periodNumber);
 }

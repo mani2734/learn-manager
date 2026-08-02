@@ -43,7 +43,8 @@ public class LearningGoalScheduler {
   private void createGoalDeadlineReminders(NotificationSettings notificationSettings, LocalDate today) {
     LocalDate reminderWindowEnd = today.plusDays(notificationSettings.getGoalDeadlineReminderDays());
 
-    learningGoalRepository.findAllByStudyModule_User_EmailIgnoreCaseAndCompletedFalseAndDeadlineBetweenOrderByDeadlineAsc(notificationSettings.getUser().getEmail(),
+    learningGoalRepository.findAllByStudyModule_User_EmailIgnoreCaseFalseAndDeadlineBetweenOrderByDeadlineAsc(
+                              notificationSettings.getUser().getEmail(),
                                                                                                                           today,
                                                                                                                           reminderWindowEnd)
                           .forEach(learningGoal -> createGoalDeadlineReminder(learningGoal, today));
