@@ -19,7 +19,7 @@ import static com.learnmanager.LearnManagerApplication.DATE_TIME_FORMATTER;
 
 @Service
 @RequiredArgsConstructor
-public class NotificationScheduler {
+public class PlannedSessionScheduler {
 
   private static final String PLANNED_SESSION_REMINDER_TITLE = "Planned study session reminder";
 

@@ -3,6 +3,7 @@ package com.learnmanager.repository;
 import com.learnmanager.entity.LearningGoal;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,4 +22,9 @@ public interface LearningGoalRepository extends JpaRepository<LearningGoal, Long
 
   void deleteAllByStudyModule_Id(
       Long studyModuleId);
+
+  List<LearningGoal> findAllByStudyModule_User_EmailIgnoreCaseAndCompletedFalseAndDeadlineBetweenOrderByDeadlineAsc(
+      String email,
+      LocalDate deadlineStart,
+      LocalDate deadlineEnd);
 }

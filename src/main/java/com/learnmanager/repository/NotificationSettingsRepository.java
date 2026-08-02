@@ -13,4 +13,6 @@ public interface NotificationSettingsRepository extends JpaRepository<Notificati
   List<NotificationSettings> findAllByPlannedSessionReminderEnabledTrueAndUser_ActiveTrue();
 
   List<NotificationSettings> findAllByInactivityReminderEnabledTrueAndUser_ActiveTrue();
+
+  List<NotificationSettings> findAllByGoalDeadlineReminderEnabledTrueAndUser_ActiveTrue();
 }
