@@ -22,4 +22,9 @@ public interface PlannedStudySessionRepository extends JpaRepository<PlannedStud
       String email,
       LocalDateTime rangeEnd,
       LocalDateTime rangeStart);
+
+  List<PlannedStudySession> findAllByUser_EmailIgnoreCaseAndStartTimeGreaterThanEqualAndStartTimeLessThanEqualOrderByStartTimeAsc(
+      String email,
+      LocalDateTime rangeStart,
+      LocalDateTime rangeEnd);
 }
