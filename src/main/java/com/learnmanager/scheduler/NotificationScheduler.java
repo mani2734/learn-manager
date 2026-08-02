@@ -14,13 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+
+import static com.learnmanager.LearnManagerApplication.DATE_TIME_FORMATTER;
 
 @Service
 @RequiredArgsConstructor
 public class NotificationScheduler {
-
-  private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
   private static final String PLANNED_SESSION_REMINDER_TITLE = "Planned study session reminder";
 
@@ -52,7 +51,7 @@ public class NotificationScheduler {
 
   private void createPlannedSessionReminder(
       PlannedStudySession plannedStudySession) {
-    String referenceKey = createReferenceKey(plannedStudySession, NotificationType.PLANNED_SESSION_REMINDER);
+    String referenceKey = createReferenceKey(plannedStudySession);
 
     if (notificationRepository.existsByReferenceKey(referenceKey)) {
       return;
@@ -66,8 +65,8 @@ public class NotificationScheduler {
         referenceKey));
   }
 
-  private String createReferenceKey(PlannedStudySession plannedStudySession, NotificationType type) {
-    return type + ":" + plannedStudySession.getId() + ":" + plannedStudySession.getStartTime();
+  private String createReferenceKey(PlannedStudySession plannedStudySession) {
+    return NotificationType.PLANNED_SESSION_REMINDER + ":" + plannedStudySession.getId() + ":" + plannedStudySession.getStartTime();
   }
 
   private String createMessage(

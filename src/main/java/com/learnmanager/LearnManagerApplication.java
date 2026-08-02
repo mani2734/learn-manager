@@ -7,6 +7,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.Clock;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 @SpringBootApplication
 @EnableScheduling
@@ -20,5 +21,7 @@ public class LearnManagerApplication {
   public Clock applicationClock() {
     return Clock.system(ZoneId.of("Europe/Vienna"));
   }
+
+  public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
 
 }

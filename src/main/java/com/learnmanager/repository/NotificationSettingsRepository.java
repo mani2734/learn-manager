@@ -11,4 +11,6 @@ public interface NotificationSettingsRepository extends JpaRepository<Notificati
   Optional<NotificationSettings> findByUser_EmailIgnoreCase(String email);
 
   List<NotificationSettings> findAllByPlannedSessionReminderEnabledTrueAndUser_ActiveTrue();
+
+  List<NotificationSettings> findAllByInactivityReminderEnabledTrueAndUser_ActiveTrue();
 }
