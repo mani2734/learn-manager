@@ -4,6 +4,7 @@ import com.learnmanager.dto.response.AdminUserResponse;
 import com.learnmanager.dto.response.TestDataGenerationResponse;
 import com.learnmanager.entity.*;
 import com.learnmanager.entity.enums.Role;
+import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -76,6 +77,28 @@ public class AdminService {
     }
 
     return new TestDataGenerationResponse(TEST_USER_EMAILS.size(), TEST_USER_EMAILS, TEST_PASSWORD);
+  }
+
+  @Transactional
+  public AdminUserResponse deactivateUser(Long userId) {
+    User user = findUserById(userId);
+
+    validateUserCanBeManaged(user);
+
+    user.deactivate();
+
+    return AdminUserResponse.fromEntity(userRepository.save(user));
+  }
+
+  @Transactional
+  public AdminUserResponse activateUser(Long userId) {
+    User user = findUserById(userId);
+
+    validateUserCanBeManaged(user);
+
+    user.activate();
+
+    return AdminUserResponse.fromEntity(userRepository.save(user));
   }
 
   private void deleteTestUser(String email) {
@@ -209,4 +232,15 @@ public class AdminService {
 
     return studyTimes;
   }
+
+  private void validateUserCanBeManaged(User user) {
+    if (user.getRole() == Role.ADMIN) {
+      throw new BusinessRuleException("Admin users cannot be managed through user administration");
+    }
+  }
+
+  private User findUserById(Long userId) {
+    return userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+  }
+
 }

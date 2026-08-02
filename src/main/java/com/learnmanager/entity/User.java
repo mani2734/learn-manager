@@ -24,6 +24,14 @@ public class User extends BaseEntity {
 
   @Column(nullable = false) private boolean active = true;
 
+  public void deactivate() {
+    this.active = false;
+  }
+
+  public void activate() {
+    this.active = true;
+  }
+
   public User(String email, String passwordHash) {
     this.email = email;
     this.passwordHash = passwordHash;

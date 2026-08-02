@@ -4,10 +4,7 @@ import com.learnmanager.dto.response.AdminUserResponse;
 import com.learnmanager.dto.response.TestDataGenerationResponse;
 import com.learnmanager.service.AdminService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +28,15 @@ public class AdminController {
   @GetMapping("users/get/{id}")
   public AdminUserResponse getUserById(@PathVariable Long id) {
     return adminService.getUserById(id);
+  }
+
+  @PutMapping("users/deactivate/{id}")
+  public AdminUserResponse deactivateUser(@PathVariable Long id) {
+    return adminService.deactivateUser(id);
+  }
+
+  @PutMapping("users/activate/{id}")
+  public AdminUserResponse activateUser(@PathVariable Long id) {
+    return adminService.activateUser(id);
   }
 }
