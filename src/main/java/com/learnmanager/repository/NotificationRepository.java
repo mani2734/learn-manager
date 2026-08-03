@@ -17,5 +17,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
   boolean existsByReferenceKey(String referenceKey);
 
-  List<Notification> findAllByNotificationReadTrueAndUpdatedAtAfter(LocalDateTime date);
+  List<Notification> findAllByNotificationReadTrueAndUpdatedAtBefore(LocalDateTime date);
 }
