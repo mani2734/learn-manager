@@ -8,13 +8,13 @@ import com.learnmanager.entity.enums.GoalStatus;
 import com.learnmanager.exception.BusinessRuleException;
 import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.testsupport.AbstractIntegrationTest;
-import com.learnmanager.testsupport.TestDataFactory.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.math.BigDecimal;
 
+import static com.learnmanager.testsupport.TestDataFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

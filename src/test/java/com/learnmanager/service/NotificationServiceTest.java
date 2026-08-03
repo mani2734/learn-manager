@@ -4,7 +4,6 @@ import com.learnmanager.entity.Notification;
 import com.learnmanager.entity.User;
 import com.learnmanager.entity.enums.NotificationType;
 import com.learnmanager.exception.ResourceNotFoundException;
-import com.learnmanager.repository.NotificationRepository;
 import com.learnmanager.testsupport.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +15,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class NotificationServiceTest extends AbstractIntegrationTest {
 
   @Autowired private NotificationService notificationService;
-
-  @Autowired private NotificationRepository notificationRepository;
 
   @Test
   void getAllShouldOnlyReturnNotificationsOfRequestedUser() {

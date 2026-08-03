@@ -8,12 +8,12 @@ import com.learnmanager.exception.ResourceNotFoundException;
 import com.learnmanager.repository.StudyTimeRepository;
 import com.learnmanager.repository.TimerRepository;
 import com.learnmanager.testsupport.AbstractIntegrationTest;
-import com.learnmanager.testsupport.TestDataFactory.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 
+import static com.learnmanager.testsupport.TestDataFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
