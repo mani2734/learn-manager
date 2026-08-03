@@ -1,0 +1,17 @@
+package com.learnmanager.testsupport;
+
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+
+import java.time.Clock;
+
+@TestConfiguration(proxyBeanMethods = false)
+public class FixedClockTestConfig {
+
+  @Bean
+  @Primary
+  public Clock applicationClockTest() {
+    return TestDataFactory.createFixedClock();
+  }
+}

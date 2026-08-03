@@ -4,6 +4,7 @@ import com.learnmanager.LearnManagerApplication;
 import com.learnmanager.entity.LearningGoal;
 import com.learnmanager.entity.Notification;
 import com.learnmanager.entity.NotificationSettings;
+import com.learnmanager.entity.enums.GoalStatus;
 import com.learnmanager.entity.enums.NotificationType;
 import com.learnmanager.repository.LearningGoalRepository;
 import com.learnmanager.repository.NotificationRepository;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,10 +45,14 @@ public class LearningGoalScheduler {
   private void createGoalDeadlineReminders(NotificationSettings notificationSettings, LocalDate today) {
     LocalDate reminderWindowEnd = today.plusDays(notificationSettings.getGoalDeadlineReminderDays());
 
-    learningGoalRepository.findAllByStudyModule_User_EmailIgnoreCaseFalseAndDeadlineBetweenOrderByDeadlineAsc(
-                              notificationSettings.getUser().getEmail(),
-                                                                                                                          today,
-                                                                                                                          reminderWindowEnd)
+    learningGoalRepository.findAllByStudyModule_User_EmailIgnoreCaseAndStatusNotInAndDeadlineBetweenOrderByDeadlineAsc(
+                              notificationSettings.getUser()
+                                                  .getEmail(),
+                              List.of(
+                                  GoalStatus.COMPLETED,
+                                  GoalStatus.CANCELLED),
+                              today,
+                              reminderWindowEnd)
                           .forEach(learningGoal -> createGoalDeadlineReminder(learningGoal, today));
   }
 
