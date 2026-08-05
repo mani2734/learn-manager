@@ -12,10 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,11 +33,13 @@ public class ReportingService {
 
   private final HelperService helperService;
 
+  private final Clock applicationClock;
+
   @Transactional(readOnly = true)
   public ReportingDashboardResponse getDashboard(String userEmail) {
     String normalizedEmail = helperService.normalizeEmail(userEmail);
 
-    LocalDate today = LocalDate.now(APPLICATION_TIME_ZONE);
+    LocalDate today = LocalDate.now(applicationClock);
     LocalDateTime todayStart = today.atStartOfDay();
     LocalDateTime tomorrowStart = today.plusDays(1).atStartOfDay();
     LocalDateTime monthStart = today.withDayOfMonth(1).atStartOfDay();
